@@ -396,7 +396,7 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = "100%";
-    dialogConfig.height = "75%";
+    dialogConfig.height = "70%";
     dialogConfig.panelClass = "custom-dialog";
     dialogConfig.data = data;
     const dialogRef = this._dialog.open(ConfirmSaleComponent, dialogConfig);
