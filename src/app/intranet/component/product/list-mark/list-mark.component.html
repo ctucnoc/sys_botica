@@ -1,0 +1,69 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-400" href="javascript:void(0)">Gestión Producto</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Gestión de Marcas</h2>
+    </div>
+</div>
+<div class="container">
+    <div class="search-div">
+        <button class="circule-button padding-right" mat-raised-button (click)="onCreater()">
+            <mat-icon svgIcon="plus"></mat-icon>
+        </button>
+        <button style="margin-left: 10px;" class="circule-button" matTooltip="Borrar" mat-raised-button (click)="onEraser()">
+            <mat-icon svgIcon="eraser"></mat-icon>
+        </button>
+        <mat-form-field class="search-form-field w-60">
+            <input matInput [(ngModel)]="searchKey" placeholder="BUSCAR POR DESCRIPCIÓN" autocomplete="off"
+                (keydown.enter)="onSearchMark($event)" appUpper>
+            <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="clear()">
+                <mat-icon svgIcon="cancel"></mat-icon>
+            </button>
+            <button mat-button matSuffix mat-icon-button>
+                <mat-icon svgIcon="search"></mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="listData" matSort>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="ID">
+                <mat-header-cell fxFlex="30%" *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+                <mat-cell fxFlex="30%" *matCellDef="let row">{{row.id}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="MARCA">
+                <mat-header-cell fxFlex="60%" *matHeaderCellDef mat-sort-header>MARCA</mat-header-cell>
+                <mat-cell fxFlex="60%" *matCellDef="let row">{{row.name | firstLetterUpperCase}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="SELECCIONE">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">
+                    <button mat-icon-button matTooltip="Editar" (click)="onCreater(row)">
+                        <mat-icon svgIcon="edit"></mat-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Eliminar" (click)="onDelete(row)">
+                        <mat-icon svgIcon="delete"></mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </table>
+        <mat-paginator [length]="totalElements" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5"
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>

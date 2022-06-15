@@ -1,0 +1,70 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>Detalle del Producto</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmDtEntryProduct" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="PRODUCTO" type="text" formControlName="productName">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="100" placeholder="PRECIO DE COMPRA" type="text"
+                            formControlName="purchaseprecio" mask="separator.2">
+                        <span matPrefix>S/.&nbsp;</span>
+                        <mat-error *ngIf="frmDtEntryProduct.get('amount')?.hasError('required')">
+                            Por favor, Ingrese precio de compra
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input type="number" mask="0*" matInput maxlength="100" placeholder="CANTIDAD DE INGRESO" type="text"
+                            formControlName="amount">
+                        <mat-error *ngIf="frmDtEntryProduct.get('amount')?.hasError('required')">
+                            Por favor, Ingrese la cantidad comprada
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="100" placeholder="NRO. DE LOTE" type="text"
+                            formControlName="lotnumber" [required]="blFlagRequiredLot">
+                        <mat-error *ngIf="frmDtEntryProduct.get('lotnumber')?.hasError('required')">
+                            Por favor, Ingrese un Lote
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input placeholder="FECHA DE VENCIMIENTO" matInput [matDatepicker]="picker"
+                            formControlName="expiratedate" [required]="blFlagRequiredExpiratedate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="frmDtEntryProduct.get('expiratedate')?.hasError('required')">
+                            Por favor, Ingrese fecha de vencimiento
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">AGREGAR</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

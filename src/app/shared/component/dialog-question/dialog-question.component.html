@@ -1,0 +1,12 @@
+<h3 mat-dialog-title>{{question.title}}</h3>
+<div mat-dialog-content>
+    <p>{{question.subTitle}}</p>
+</div>
+<div mat-dialog-actions>
+    <button *ngIf="question.showCancelButton" style="width: 48%;" mat-button
+        (click)="close()">{{question.btnCancelText}}
+    </button>
+    <button *ngIf="question.showConfirmButton" style="width: 48%;" mat-button (click)="confirmation()"
+        cdkFocusInitial>{{question.btnConfirmText}}
+    </button>
+</div>

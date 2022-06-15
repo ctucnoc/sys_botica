@@ -1,0 +1,40 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">Gestión de Reportes</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Reportes de Ventas por Fecha</h2>
+    </div>
+</div>
+<div class="container">
+    <form [formGroup]="frmSearch" autocomplete="off">
+        <div class="row">
+            <div class="col">
+                <mat-form-field class="w-full">
+                    <mat-label>Fecha Reporte a generar</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matStartDate displayFormat="YYYY/MM/DD" placeholder="Fecha inicio"
+                            formControlName="dateFrom">
+                        <input matEndDate placeholder="Fecha fin" formControlName="dateTo">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+            <div class="col" fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+                <button class="btn w-40" style="height: 42px;" (click)="clear()">Limpiar</button>
+                <button type="button" class="btn w-40" style="height: 42px;margin-left: 10px;" (click)="onSubmit()">
+                    Generar Reporte
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

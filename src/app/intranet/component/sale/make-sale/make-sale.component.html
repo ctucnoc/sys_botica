@@ -1,0 +1,170 @@
+<div class="container">
+    <div class="display-inline">
+        <div class="w-100 display-flex">
+            <div class="w-60">
+                <div [formGroup]="frmAutoComplete" class="col">
+                    <mat-form-field class="search-form-field" style="width: 95%;margin: 0; margin-bottom: 10px;">
+                        <mat-label>Ingrese Código de barra o descripción del producto</mat-label>
+                        <input matInput formControlName="nameProduct" placeholder="Ingrese descripción del producto"
+                            #input [matAutocomplete]="auto">
+                        <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                            *ngIf="frmAutoComplete.controls['nameProduct'].value" (click)="clearProduct()">
+                            <mat-icon svgIcon="cancel"></mat-icon>
+                        </button>
+                        <button mat-button matSuffix mat-icon-button>
+                            <mat-icon svgIcon="search"></mat-icon>
+                        </button>
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let product of productSales" (click)="onSelectProduct(product)">
+                                {{product.productName}}
+                                <span style="text-transform: uppercase;font-size: 13px;color: green;">
+                                    {{ ' | F.V ' + product.dateExpiration + ' | STOCK ' + product.amount + ' | PRECIO ' + product.salePrice}}
+                                </span>
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+                <div class="mat-elevation-z8">
+                    <table mat-table [dataSource]="dataSource" matSort>
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="PRODUCTO">
+                            <mat-header-cell fxFlex="65%" *matHeaderCellDef mat-sort-header>PRODUCTO</mat-header-cell>
+                            <mat-cell fxFlex="65%" *matCellDef="let row">{{row.productName | firstLetterUpperCase}}</mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="F. VENCIMIENTO">
+                            <mat-header-cell fxFlex="15%" *matHeaderCellDef mat-sort-header>F. VENCIMIENTO
+                            </mat-header-cell>
+                            <mat-cell fxFlex="15%" *matCellDef="let row">{{row.dateExpiration | date:'dd/MM/yyyy'}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="CANTIDAD">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>CANTIDAD</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">
+                                <input style="width: 50px;" pattern="^[0-9]+" min="1" [max]="row.amount" type="number" [value]="row.amountSale" (change)="onMoreProduct($event,row.id)">
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="PRECIO">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>PRECIO</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">{{row.salePrice | currency:'S/.'}}</mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="SUB TOTAL">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>SUB TOTAL</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">{{row.amountSale*row.salePrice | currency:'S/.'}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="SELECCIONE">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">
+                                <button mat-icon-button matTooltip="Eliminar" (click)="onDelete(row)">
+                                    <mat-icon svgIcon="delete"></mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </table>
+                    <mat-paginator [length]="totalElements" [pageSize]="ziseInit" showFirstLastButtons>
+                    </mat-paginator>
+                </div>
+            </div>
+            <div class="w-40" style="margin-left: 10px;margin-right: 10px;">
+                <form [formGroup]="frmCustomer" autocomplete="off">
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <input formControlName="numberDocument" mask="0*" matInput maxlength="60"
+                                    placeholder="INGRESE NRO DOCUMENTO" (blur)="onBlur()" type="text">
+                                <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                                    *ngIf="frmCustomer.controls['numberDocument'].value" (click)="clearCustomer()">
+                                    <mat-icon svgIcon="cancel"></mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <button style="margin-left: 10px;" class="circule-button" matTooltip="Registrar Cliente" (click)="onCreaterCustomer()"
+                                mat-raised-button>
+                                <mat-icon svgIcon="plus"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <input formControlName="fullName" matInput maxlength="60" placeholder="CLIENTE"
+                                    type="text">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <span matPrefix>S/. &nbsp;</span>
+                                <input matInput maxlength="10" mask="separator.2" formControlName="paymentTotal" placeholder="TOTAL A PAGAR" type="text">
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <span matPrefix>S/. &nbsp;</span>
+                                <input matInput maxlength="10" mask="separator.2" formControlName="payment" placeholder="PAGAR CON" type="text" (blur)="TotalPaymentOrde()">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <span matPrefix>S/. &nbsp;</span>
+                                <input matInput maxlength="10" mask="separator.2" formControlName="turned" placeholder="VUELTO" type="text">
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <mat-label>Comprobante de Pago</mat-label>
+                                <mat-select formControlName="idProofPayment">
+                                    <mat-option *ngFor="let payment of proofPayments" [value]="payment.id">{{payment.description}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" class="btn w-100" style="height: 42px;" (click)="onSumit()" [disabled] = "onDissabledSale()">Realizar Venta</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" (click)="clear()" class="btn w-100" style="height: 42px;">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+                <barcode-scanner-livestream type="code_128" (valueChanges)="onValueChanges($event)"
+                    (started)="(onStarted)">
+                </barcode-scanner-livestream>
+            </div>
+        </div>
+        <br> 
+        <mat-divider></mat-divider>
+        <br>
+        <div class="w-100 display-flex">
+            <div class="w-60">
+                celia
+            </div>
+            <div class="w-40 display-flex" *ngIf="categories">
+                <div class="wrapper">
+                    <ng-container *ngFor="let category of categories">
+                        <button class="text-button">
+                            {{category.name}}
+                        </button>
+                    </ng-container>
+                  </div>              
+            </div>
+        </div>      
+    </div>
+</div>

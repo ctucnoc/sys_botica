@@ -1,0 +1,71 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">Gestión Usuario</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Policas de Securidad</h2>
+    </div>
+</div>
+<div class="container">
+    <div class="search-div">
+        <button class="circule-button" matTooltip="Modificar" mat-raised-button (click)="noTdisabledFrmSecurityPolicy()" [disabled]="!blSave">
+            <mat-icon svgIcon="edit_solid"></mat-icon>
+        </button>
+        <button style="margin-left: 10px;" class="circule-button" matTooltip="Guardar" mat-raised-button [disabled]="blSave" (click)="onSave()">
+            <mat-icon svgIcon="save_regular"></mat-icon>
+        </button>
+    </div>
+    <form [formGroup]="frmSecurityPolicy">
+        <mat-card class="shipping-card">
+            <mat-card-content>
+                <div class="row">
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <input matInput maxlength="40" placeholder="LONGITUD MINIMO DE CONTRASEÑA" type="number"
+                                formControlName="minpasswordlength">
+                        </mat-form-field>
+                    </div>
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <input matInput maxlength="40" placeholder="LONGITUD MAXIMO DE CONTRASEÑA" type="number"
+                                formControlName="maxpasswordlength">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <input matInput maxlength="40" placeholder="MAXIMO DE NUMERO DE INTENTOS DE LOGIN" type="number"
+                                formControlName="maxnumberattempts">
+                        </mat-form-field>
+                    </div>
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <input matInput maxlength="40" placeholder="TIEMPO MAXIMO DE INACTIVIDAD DEL SISTEMA" type="number"
+                                formControlName="maxidletime">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <mat-select placeholder="CAMBIAR CONTRASEÑA EN EL PROXIMO INICIO DE SESSIÓN" formControlName="passwordchangefirstlogin">
+                                <mat-option *ngFor="let lts of ltsDosOpciones" [value]="lts.id">
+                                    {{lts.description}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>

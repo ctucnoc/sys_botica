@@ -1,0 +1,16 @@
+.h-30{
+    height: 80%;
+    overflow: auto;
+}
+::ng-deep {
+    .custom-dialog > mat-dialog-container {
+           padding: 0px;
+           border-radius: 16px;
+       }
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+} 

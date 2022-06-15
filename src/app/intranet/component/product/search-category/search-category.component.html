@@ -1,0 +1,48 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>Buscar Categoria</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<div class="search-div">
+    <mat-form-field class="search-form-field w-60">
+        <input matInput [(ngModel)]="searchKey" placeholder="BUSCAR POR DESCRIPCIÓN" autocomplete="off"
+            (keydown.enter)="onSearchCategory($event)">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="clear()">
+            <mat-icon svgIcon="cancel"></mat-icon>
+        </button>
+        <button mat-button matSuffix mat-icon-button>
+            <mat-icon svgIcon="search"></mat-icon>
+        </button>
+    </mat-form-field>
+</div>
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="listData" matSort>
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="CATEGORIA">
+            <mat-header-cell fxFlex="30%" *matHeaderCellDef mat-sort-header>CATEGORIA</mat-header-cell>
+            <mat-cell fxFlex="30%" *matCellDef="let row">{{row.name}}</mat-cell>
+        </ng-container>
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="DESCRIPCIÓN">
+            <mat-header-cell fxFlex="60%" *matHeaderCellDef mat-sort-header>DESCRIPCIÓN</mat-header-cell>
+            <mat-cell fxFlex="60%" *matCellDef="let row">{{row.description}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="SELECCIONE">
+            <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+            <mat-cell fxFlex="10%" *matCellDef="let row">
+                <button mat-icon-button matTooltip="Editar" (click)="selectRow(row)">
+                    <mat-icon svgIcon="edit"></mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </table>
+    <mat-paginator [length]="totalElements" [pageSize]="3" showFirstLastButtons>
+    </mat-paginator>
+</div>

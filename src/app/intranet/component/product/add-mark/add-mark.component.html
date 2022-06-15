@@ -1,0 +1,23 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmMark.controls['id'].value?"Modificar Marca":"Registrar Marca"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmMark" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="40" placeholder="MARCA" type="text" formControlName="name" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

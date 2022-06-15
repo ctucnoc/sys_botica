@@ -1,0 +1,119 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">Gestión de Ventas</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Consultar Ventas</h2>
+    </div>
+</div>
+<div class="container" *ngIf="showAdvanceFilters">
+    <form [formGroup]="frmSearch" autocomplete="off">
+        <div class="row">
+            <div class="col">
+                <mat-form-field class="full-width">
+                    <input type="hidden" formControlName="idcustomer">
+                    <input matInput maxlength="60" placeholder="Cliente" type="text" formControlName="customer"
+                        [matAutocomplete]="auto">
+                    <button type="reset" mat-button matSuffix mat-icon-button aria-label="Clear"
+                        *ngIf="frmSearch.controls['customer'].value" (click)="clearIdCustomer()">
+                        <mat-icon svgIcon="cancel"></mat-icon>
+                    </button>
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let objCustomer of customers" (click)="onSelect(objCustomer)">
+                            {{objCustomer.bussinesName?objCustomer.bussinesName:objCustomer.firstName +' '+ objCustomer.lastName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col">
+                <mat-form-field class="full-width">
+                    <mat-label>Comprobante de Pago</mat-label>
+                    <mat-select formControlName="idproofpayment">
+                        <mat-option *ngFor="let payment of proofPayments" [value]="payment.id">{{payment.description}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col">
+                <mat-form-field class="w-full">
+                    <mat-label>Fecha Venta</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matStartDate displayFormat="YYYY/MM/DD" placeholder="Fecha inicio"
+                            formControlName="dateFrom">
+                        <input matEndDate placeholder="Fecha fin" formControlName="dateTo">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+            <div class="col" fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+                <button class="btn w-40" style="height: 42px;" (click)="clear()">Limpiar</button>
+                <button type="button" class="btn w-40" style="height: 42px;margin-left: 10px;" (click)="onSubmit()">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <div class="search-div">
+        <button class="btn-semi-circulary w-5" mat-flat-button [disabled]="onDisabledDownload()">
+            <mat-icon svgIcon="download"></mat-icon>
+        </button>
+        <button class="btn-semi-circulary w-15" style="margin-left: 10px;" mat-flat-button
+            (click)="showAdvanceOptions(!showAdvanceFilters)">
+            <mat-icon svgIcon="search_solid"></mat-icon>
+            <span style="margin-left: 5px;">Busqueda Avanzada</span>
+        </button>
+    </div>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="datasource" matSort>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="CLIENTE">
+                <mat-header-cell fxFlex="40%" *matHeaderCellDef mat-sort-header>CLIENTE</mat-header-cell>
+                <mat-cell fxFlex="40%" *matCellDef="let row">{{row.customer}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="COMPROBANTE DE PAGO">
+                <mat-header-cell fxFlex="30%" *matHeaderCellDef mat-sort-header>COMPROBANTE DE PAGO</mat-header-cell>
+                <mat-cell fxFlex="30%" *matCellDef="let row">{{row.proofpayment}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="FECHA DE VENTA">
+                <mat-header-cell fxFlex="20%" *matHeaderCellDef mat-sort-header>FECHA DE VENTA</mat-header-cell>
+                <mat-cell fxFlex="20%" *matCellDef="let row">{{row.datecreated | date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="SELECCIONE">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">
+                    <button mat-icon-button matTooltip="Detalle" (click)="onFindBySale(row.id)">
+                        <mat-icon svgIcon="eye"></mat-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Eliminar">
+                        <mat-icon svgIcon="delete"></mat-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Imprimir" (click)="onPrint(row.id)">
+                        <mat-icon svgIcon="print"></mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </table>
+        <mat-paginator [length]="totalElements" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5"
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>

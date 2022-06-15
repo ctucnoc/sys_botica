@@ -1,0 +1,140 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">Gestión Almacén</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Ingreso de Producto al Almacén</h2>
+    </div>
+</div>
+<div class="container">
+    <div class="display-inline">
+        <div class="w-100">
+            <div>
+                <mat-card class="shipping-card">
+                    <mat-card-content>
+                        <div [formGroup]="frmEntryProduct" class="row">
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Documento de Ingreso</mat-label>
+                                    <mat-select formControlName="idEntryDocument">
+                                        <mat-option *ngFor="let entryDocument of entryDocuments"
+                                            [value]="entryDocument.id">{{entryDocument.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Sucursal</mat-label>
+                                    <mat-select (selectionChange)="selectSubsidiary($event.value)" formControlName="idsubsiadiary">
+                                        <mat-option *ngFor="let subsiadiary of subsidiaries" [value]="subsiadiary.id">
+                                            {{subsiadiary.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Almacén a Ingresar</mat-label>
+                                    <mat-select formControlName="idWharehouse">
+                                        <mat-option *ngFor="let wharehouse of wharehouses" [value]="wharehouse.id">
+                                            {{wharehouse.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Proveedor</mat-label>
+                                    <mat-select formControlName="idProvider">
+                                        <mat-option *ngFor="let provider of providers" [value]="provider.id">{{provider.tradename}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div [formGroup]="frmAutoComplete" class="col">
+                                <mat-form-field class="search-form-field" style="margin: 0;">
+                                    <input matInput formControlName="nameProduct"
+                                        placeholder="¿Buscar Producto por palabra clave?" [matAutocomplete]="auto">
+                                    <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                                        *ngIf="frmAutoComplete.controls['nameProduct'].value" (click)="clearProduct()">
+                                        <mat-icon svgIcon="cancel"></mat-icon>
+                                    </button>
+                                    <button mat-button matSuffix mat-icon-button>
+                                        <mat-icon svgIcon="search"></mat-icon>
+                                    </button>
+                                    <mat-autocomplete #auto="matAutocomplete">
+                                        <mat-option *ngFor="let product of products" (click)="onSelectProduct(product)">
+                                            {{product.name}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </div>
+                            <div class="col" fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+                                <button class="btn w-20" style="height: 42px;">Limpiar</button>
+                                <button type="button" class="btn w-20" style="height: 42px;margin-left: 10px;" (click)="onSubmit()">
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div><br>
+        <div class="w-100">
+            <div class="mat-elevation-z8">
+                <table style="border-radius: 8px;" mat-table [dataSource]="dataSource" matSort>
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="PRODUCTO">
+                        <mat-header-cell fxFlex="30%" *matHeaderCellDef mat-sort-header>PRODUCTO</mat-header-cell>
+                        <mat-cell fxFlex="30%" *matCellDef="let row">{{row.productName}}</mat-cell>
+                    </ng-container>
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="CANTIDAD">
+                        <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>CANTIDAD</mat-header-cell>
+                        <mat-cell fxFlex="10%" *matCellDef="let row">{{row.amount}}</mat-cell>
+                    </ng-container>
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="PRECIO DE COMPRA">
+                        <mat-header-cell fxFlex="35%" *matHeaderCellDef mat-sort-header>PRECIO DE COMPRA
+                        </mat-header-cell>
+                        <mat-cell fxFlex="35%" *matCellDef="let row">{{row.purchaseprecio | currency:'S/.'}}</mat-cell>
+                    </ng-container>
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="FECHA VENCIMIENTO">
+                        <mat-header-cell fxFlex="15%" *matHeaderCellDef mat-sort-header>FECHA VENCIMIENTO
+                        </mat-header-cell>
+                        <mat-cell fxFlex="15%" *matCellDef="let row">{{row.expiratedate | date:'dd/MM/yyyy'}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="SELECCIONE">
+                        <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                        <mat-cell fxFlex="10%" *matCellDef="let row">
+                            <button mat-icon-button matTooltip="Eliminar" (click)="onDelete(row)">
+                                <mat-icon svgIcon="delete"></mat-icon>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </table>
+                <mat-paginator [length]="totalElements" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5"
+                    showFirstLastButtons>
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

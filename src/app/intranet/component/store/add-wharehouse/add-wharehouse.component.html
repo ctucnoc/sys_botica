@@ -1,0 +1,43 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmWharehouse.controls['id'].value?"Modificar Almacén":"Registrar Almacén"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmWharehouse" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="ALMACÉN" type="text" formControlName="name"
+                            (keyup)="setName($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="100" placeholder="DESCRIPCIÓN" type="text"
+                            formControlName="description" (keyup)="setDescription($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-select placeholder="Tipo de Almacén" formControlName="type">
+                            <mat-option *ngFor="let wharehouse of wharehouses" [value]="wharehouse.id">
+                                {{wharehouse.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

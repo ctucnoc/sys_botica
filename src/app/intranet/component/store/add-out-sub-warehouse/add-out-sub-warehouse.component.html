@@ -1,0 +1,172 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">Gestión Almacén</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Salida a sub almacén</h2>
+    </div>
+</div>
+<div class="container">
+    <div class="search-div">
+        <button class="circule-button" matTooltip="Guardar Transferencia" mat-raised-button (click)="onSave()"
+            [disabled]="onDisabledSave()">
+            <mat-icon svgIcon="save_regular"></mat-icon>
+        </button>
+        <button style="margin-left: 10px;" class="circule-button" matTooltip="Limpiar" mat-raised-button
+            (click)="clearTotal()" [disabled]="onDisabledSave()">
+            <mat-icon svgIcon="eraser"></mat-icon>
+        </button>
+    </div>
+    <div class="display-inline">
+        <div class="w-100">
+            <mat-card class="shipping-card">
+                <div [formGroup]="frmMoveWharehouse" class="row">
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <mat-label>Sucursal</mat-label>
+                            <mat-select (selectionChange)="selectSubsidiary($event.value)"
+                                formControlName="idsubsidiary">
+                                <mat-option *ngFor="let subsiadiary of subsidiaries" [value]="subsiadiary.id">
+                                    {{subsiadiary.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <mat-label>Almacén de salida</mat-label>
+                            <mat-select (selectionChange)="onFindByIdWharehouseSQL($event.value)"
+                                formControlName="idwharehouseorigin">
+                                <mat-option *ngFor="let wharehouse of distributions" [value]="wharehouse.id">
+                                    {{wharehouse.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <mat-label>Almacén a ingresar</mat-label>
+                            <mat-select formControlName="idwharehousedestination">
+                                <mat-option *ngFor="let wharehouse of subwarehouses" [value]="wharehouse.id">
+                                    {{wharehouse.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-card>
+        </div><br>
+        <div class="w-100" style="display: flex;">
+            <div class="w-49">
+                <mat-form-field appearance="standard">
+                    <mat-label>Ingrese descripción del producto</mat-label>
+                    <input matInput [(ngModel)]="searchKey" (keydown.enter)="applyFilter($event)"
+                        placeholder="Ingrese descripción del producto" #input [disabled]="onDisabledSearchProduct()">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="clear()">
+                        <mat-icon svgIcon="cancel"></mat-icon>
+                    </button>
+                    <button mat-button matSuffix mat-icon-button>
+                        <mat-icon svgIcon="search"></mat-icon>
+                    </button>
+                </mat-form-field>
+                <div class="mat-elevation-z8">
+                    <table mat-table [dataSource]="dataSource" [multiTemplateDataRows]="true" matSort>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="PRODUCTO">
+                            <mat-header-cell fxFlex="65%" *matHeaderCellDef mat-sort-header>PRODUCTO</mat-header-cell>
+                            <mat-cell fxFlex="65%" *matCellDef="let row">{{row.productName}}</mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="F. VENCIMIENTO">
+                            <mat-header-cell fxFlex="15%" *matHeaderCellDef mat-sort-header>F. VENCIMIENTO
+                            </mat-header-cell>
+                            <mat-cell fxFlex="15%" *matCellDef="let row">{{row.expiratedate | date:'dd/MM/yyyy'}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="CANTIDAD">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>CANTIDAD</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">{{row.amount}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="SELECCIONE">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">
+                                <button mat-icon-button matTooltip="Transferir a sub almacén"
+                                    (click)="onDialogIncomeAmount(row);" [disabled]="onDisabledFrMoveWharehouse()">
+                                    <mat-icon svgIcon="arrow-circle-right"></mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </table>
+                    <mat-paginator [length]="totalElements" [pageSize]="5" showFirstLastButtons>
+                    </mat-paginator>
+                </div>
+            </div>
+            <div class="w-49" style="padding-left: 2%;">
+                <mat-form-field appearance="standard">
+                    <mat-label>Total de productos a Ingresar</mat-label>
+                    <input matInput [(ngModel)]="nrAmount" placeholder="Total de productos a Ingresar" #input
+                        [disabled]="true">
+                </mat-form-field>
+                <div class="mat-elevation-z8">
+                    <table mat-table [dataSource]="dataSourceNew" matSort>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="PRODUCTO">
+                            <mat-header-cell fxFlex="50%" *matHeaderCellDef mat-sort-header>PRODUCTO</mat-header-cell>
+                            <mat-cell fxFlex="50%" *matCellDef="let row">{{row.productname}}</mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="F. VENCIMIENTO">
+                            <mat-header-cell fxFlex="15%" *matHeaderCellDef mat-sort-header>F. VENCIMIENTO
+                            </mat-header-cell>
+                            <mat-cell fxFlex="15%" *matCellDef="let row">{{row.expiratedate | date:'dd/MM/yyyy'}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="PRECIO DE VENTA">
+                            <mat-header-cell fxFlex="15%" *matHeaderCellDef mat-sort-header>PRECIO DE VENTA</mat-header-cell>
+                            <mat-cell fxFlex="15%" *matCellDef="let row">{{row.saleprice | currency:'S/.'}}</mat-cell>
+                        </ng-container>
+
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="CANTIDAD">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>CANTIDAD</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">{{row.amount}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="SELECCIONE">
+                            <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                            <mat-cell fxFlex="10%" *matCellDef="let row">
+                                <button mat-icon-button matTooltip="Devolver al almacén de distribución"
+                                    (click)="onDelete(row)" [disabled]="onDisabledFrMoveWharehouse()">
+                                    <mat-icon svgIcon="arrow-circle-left"></mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumnsNew"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumnsNew;"></mat-row>
+                    </table>
+                    <mat-paginator [length]="totalElementsNew" [pageSize]="5" showFirstLastButtons>
+                    </mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

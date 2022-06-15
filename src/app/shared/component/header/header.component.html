@@ -1,0 +1,150 @@
+<mat-toolbar class="header-app">
+    <mat-toolbar-row>
+        <button mat-icon-button>
+            <mat-icon class="material-icons color_black " svgIcon="menu"></mat-icon>
+        </button>
+        <a class="social-icon-ref">
+            <img style="margin-bottom: -20px;cursor: pointer;" src="./../../../../assets/icons/menu/logo.svg"
+                width="150" height="150">
+        </a>
+        <div style="padding-left: 30px;padding-right: 30px;width: 100%;">
+            <li class="lista-menu">
+                <a class="a-item" [matMenuTriggerFor]="menu" href="javascript:void(0)">
+                    Gestión Producto
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="goToPage()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Gestionar Categoria</span>
+                        </button>
+                        <button mat-menu-item (click)="goToPageUnit()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Gestionar Unidad Producto</span>
+                        </button>
+                        <button mat-menu-item (click)="goToPageMark()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Gestionar Marca</span>
+                        </button>
+                        <button mat-menu-item (click)="goToPageProduct()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Gestionar Producto</span>
+                        </button>
+                    </mat-menu>
+                </a>
+                <a class="a-item" href="javascript:void(0)" [matMenuTriggerFor]="store">
+                    Gestion de Almacén
+                    <mat-menu #store="matMenu">
+                        <button mat-menu-item (click)="goToEntryProduct()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Ingreso de Productos</span>
+                        </button>
+                        <button mat-menu-item (click)="goToOutSubWarehouse()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Salida a sub almacén</span>
+                        </button>
+                        <button mat-menu-item (click)="goToProvider()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Proveedores</span>
+                        </button>
+                        <button mat-menu-item (click)="goToWharehouse()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Almacenes</span>
+                        </button>
+                    </mat-menu>
+                </a>
+                <a class="a-item" href="javascript:void(0)" [matMenuTriggerFor]="venta">
+                    Venta
+                    <mat-menu #venta="matMenu">
+                        <button mat-menu-item (click)="goToSale()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Realizar Venta</span>
+                        </button>
+                        <button mat-menu-item (click)="goToSoldPRoduct()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Consultar Venta</span>
+                        </button>
+                    </mat-menu>
+                </a>
+                <a class="a-item" href="javascript:void(0)" [matMenuTriggerFor]="client">
+                    Gestión Clientes
+                    <mat-menu #client="matMenu">
+                        <button mat-menu-item (click)="goToCustomer()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Administrar Clientes</span>
+                        </button>
+                    </mat-menu>
+                </a>
+                <a class="a-item" href="javascript:void(0)" [matMenuTriggerFor]="security">
+                    Gestión Usuarios
+                    <mat-menu #security="matMenu">
+                        <button mat-menu-item (click)="goToUser()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Gestionar Usuarios</span>
+                        </button>
+                        <button mat-menu-item (click)="goToUserSecurityPolicy()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Politica de Securidad</span>
+                        </button>
+                        <button mat-menu-item (click)="goToAuthority()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Roles o Autorizaciones</span>
+                        </button>
+
+                    </mat-menu>
+                </a>
+                <a class="a-item" href="javascript:void(0)" [matMenuTriggerFor]="conf">
+                    Configuración
+                    <mat-menu #conf="matMenu">
+                        <button mat-menu-item (click)="goToUserAuthority()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Usuario por Rol</span>
+                        </button>
+                        <button mat-menu-item (click)="goToUserSubsidiary()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Usuario por Sucursal</span>
+                        </button>
+                        <button mat-menu-item (click)="goToWharehouseSubsidiary()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Almacén por Sucursal</span>
+                        </button>
+                    </mat-menu>
+                </a>
+                <a class="a-item" href="javascript:void(0)" [matMenuTriggerFor]="report">
+                    Reporte
+                    <mat-menu #report="matMenu">
+                        <button mat-menu-item (click)="goToReportSaleXDate()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Reporte Venta por Fecha</span>
+                        </button>
+                    </mat-menu>
+                </a>
+            </li>
+        </div>
+        <div fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+            <ul fxLayout="row" fxLayoutGap="20px">
+                <li class="lista-menu">
+                    <a href="javascript:void(0)" class="a-header">
+                        <mat-icon mat-raised-button matBadge="0" svgIcon="notification"></mat-icon>
+                    </a>
+                    <a href="javascript:void(0)" [matMenuTriggerFor]="user">
+                        <mat-icon svgIcon="caret_down"></mat-icon>
+                        <mat-menu #user="matMenu">
+                            <div style="display: flex;padding-left: 10px;padding-bottom: 5px;padding-right: 10px;">
+                                <app-avatar [userName]="userName"></app-avatar>
+                                <span style="margin-top: 5px;padding-left: 5px;font-weight: 600;">{{userName}}</span>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <button mat-menu-item (click)="singOut()">
+                                <mat-icon svgIcon="info"></mat-icon>
+                                <span>Acerca de Sesy Farma</span>
+                            </button>
+                            <button mat-menu-item (click)="singOut()">
+                                <mat-icon svgIcon="sign_out"></mat-icon>
+                                <span>Cerrar Sessión</span>
+                            </button>
+                        </mat-menu>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>

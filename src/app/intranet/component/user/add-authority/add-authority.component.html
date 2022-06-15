@@ -1,0 +1,32 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmAuthority.controls['id'].value?"Modificar Rol":"Registrar Rol"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmAuthority" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="15" placeholder="ROL" type="text" [readonly]="blReadonly"
+                            formControlName="name" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="DESCRIPCIÓN" type="text"
+                            formControlName="description" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

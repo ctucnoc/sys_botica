@@ -1,0 +1,20 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>COMPROBANTE DE PAGO</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<iframe  width="99.8%" height="70%" [src]="url"  style="margin: auto;"></iframe>
+<div>
+    <div class="row">
+        <div class="col">
+            <mat-form-field class="full-width">
+            <input matInput maxlength="90" placeholder="CORREO ELECTRÓNICO" type="email">
+            </mat-form-field>
+        </div>
+        <div class="col">
+            <button>Enviar</button>
+        </div>
+    </div>
+</div>

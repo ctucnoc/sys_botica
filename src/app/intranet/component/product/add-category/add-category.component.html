@@ -1,0 +1,30 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmCategory.controls['id'].value?"Modificar Categoria":"Registrar Categoria"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmCategory" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="30" placeholder="NOMBRE CATEGORIA" type="text" formControlName="name" (keyup)="validatorName($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="DESCRIPCIÓN CATEGORIA" type="text" formControlName="description" (keyup)="validatorDescription($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

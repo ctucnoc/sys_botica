@@ -1,0 +1,159 @@
+[
+    {
+        "id": "products",
+        "title": "Getión Producto",
+        "type": "group",
+        "role": [],
+        "icon": "heroicons_outline:document-report",
+        "children":[
+            {
+                "id": "category.crce",
+                "title": "Clasificación Producto",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/category"
+            },
+            {
+                "id": "mark.crce",
+                "title": "Marka",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/mark"
+            },
+            {
+                "id": "unit.crce",
+                "title": "Unidad Medida",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/unit"
+            },
+            {
+                "id": "products.crce",
+                "title": "Producto",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/product"
+            }
+        ]
+    },
+    {
+        "id": "wharehouse",
+        "title": "Getión Almacén",
+        "type": "group",
+        "role": [],
+        "icon": "heroicons_outline:document-report",
+        "children":[
+            {
+                "id": "wharehouse.crce",
+                "title": "Almacén",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/wharehouse"
+            },
+            {
+                "id": "provider.crce",
+                "title": "Proveedor",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/provider"
+            },
+            {
+                "id": "entry-product.crce",
+                "title": "Ingresar Productos",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/entry-product"
+            },
+            {
+                "id": "out-sub-warehouse.crce",
+                "title": "Salida a Sub Almacén",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/out-sub-warehouse"
+            }
+        ]
+    },
+    {
+        "id": "customer",
+        "title": "Getión Cliente",
+        "type": "group",
+        "role": [],
+        "icon": "heroicons_outline:document-report",
+        "children":[
+            {
+                "id": "customer.crce",
+                "title": "Cliente",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/customer"
+            }
+        ]
+    },
+    {
+        "id": "user",
+        "title": "Getión Usuario",
+        "type": "group",
+        "role": [],
+        "icon": "heroicons_outline:document-report",
+        "children":[
+            {
+                "id": "user.crce",
+                "title": "Usuario",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/user"
+            },
+            {
+                "id": "user-subsidiary'.crce",
+                "title": "Usuario por Sucursal",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/user-subsidiary"
+            },
+            {
+                "id": "security-policy.crce",
+                "title": "Politicas de Securidad",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/security-policy"
+            },
+            {
+                "id": "user-authority.crce",
+                "title": "Usuario por Rol",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/user-authority"
+            },
+            {
+                "id": "authority.crce",
+                "title": "Rol",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/authority"
+            }
+        ]
+    },
+    {
+        "id": "sale",
+        "title": "Getión Venta",
+        "type": "group",
+        "role": [],
+        "icon": "heroicons_outline:document-report",
+        "children":[
+            {
+                "id": "sale.crce",
+                "title": "Realizar Venta",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/sale"
+            },
+            {
+                "id": "sold-product.crce",
+                "title": "Consultar Venta",
+                "type": "basic",
+                "icon": "computer",
+                "link": "/intranet/sold-product"
+            }
+        ]
+    }
+]

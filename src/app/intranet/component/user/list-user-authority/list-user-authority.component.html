@@ -1,0 +1,75 @@
+<div class="header-container">
+    <div class="text-container">
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">{{title}}</a>
+        </div>
+        <div>
+            <strong style="padding-left: 10px; padding-right: 10px; font-size: 16px;"> > </strong>
+        </div>
+        <div>
+            <a class="text-primary-600" href="javascript:void(0)">Gestión Usuario</a>
+        </div>
+    </div>
+    <div>
+        <h2 class="title-h2">Usuario por Rol</h2>
+    </div>
+</div>
+<div class="container">
+    <form [formGroup]="frmUser">
+        <div class="search-div">
+            <button class="circule-button" mat-raised-button (click)="onCreater()" [disabled]="onDisablePlus()">
+                <mat-icon svgIcon="plus"></mat-icon>
+            </button>
+            <button type="reset" style="margin-left: 10px;" class="circule-button" matTooltip="Borrar" mat-raised-button
+                (click)="onEraser()">
+                <mat-icon svgIcon="eraser"></mat-icon>
+            </button>
+            <mat-form-field class="search-form-field w-60">
+                <input matInput formControlName="username" placeholder="¿Ingrese Nombre del Usuario?" autocomplete="off"
+                    [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let user of users" (click)="onSelect(user)">
+                        {{user.fullname}}
+                    </mat-option>
+                </mat-autocomplete>
+                <button type="reset" mat-button matSuffix mat-icon-button aria-label="Clear"
+                    *ngIf="frmUser.controls['username'].value" (click)="clear()">
+                    <mat-icon svgIcon="cancel"></mat-icon>
+                </button>
+                <button mat-button matSuffix mat-icon-button>
+                    <mat-icon svgIcon="search"></mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </form>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="listData" matSort>
+            <!-- Position Column -->
+            <ng-container matColumnDef="USUARIO">
+                <mat-header-cell fxFlex="45%" *matHeaderCellDef mat-sort-header>USUARIO</mat-header-cell>
+                <mat-cell fxFlex="45%" *matCellDef="let row">{{row.user.name}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="ROL O AUTORIZACIÓN">
+                <mat-header-cell fxFlex="45%" *matHeaderCellDef mat-sort-header>ROL O AUTORIZACIÓN</mat-header-cell>
+                <mat-cell fxFlex="45%" *matCellDef="let row">{{row.authority.name}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="SELECCIONE">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">
+                    <button mat-icon-button matTooltip="Eliminar" (click)="onDelete(row)">
+                        <mat-icon svgIcon="delete"></mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </table>
+        <mat-paginator [length]="totalElements" [pageSize]="5"
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmProvider.controls['id'].value?"Modificar Proveedor":"Registrar Provvedor"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmProvider" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="NOMBRE COMERCIAL" type="text"
+                            formControlName="bussinesname" (keyup)="setBussunesName($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="RAZÓN SOCIAL" type="text"
+                            formControlName="tradename" (keyup)="setTradeName($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="11" placeholder="RUC" type="text"
+                            formControlName="ruc" (keyup)="setRuc($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="100" placeholder="DIRECCIÓN" type="text"
+                            formControlName="address" (keyup)="setAddress($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="NRO. CELULAR" type="text"
+                            formControlName="cellphone" (keyup)="setCellPhone($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="EMAIL" type="text"
+                            formControlName="email" (keyup)="setEmail($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="PAGINA WEB" type="text"
+                            formControlName="webpage" (keyup)="setWebPage($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="REPRESENTANTE" type="text"
+                            formControlName="representative" (keyup)="setRepresentative($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

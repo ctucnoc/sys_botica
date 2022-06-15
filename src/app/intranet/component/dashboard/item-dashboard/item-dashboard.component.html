@@ -1,0 +1,30 @@
+<div class="container" *ngIf="dashboard">
+    <table>
+        <thead>
+            <th style="justify-content: center;">
+                <app-item-quantity [quantityProduct]="dashboard.quantityProduct" [description]="vcTotalProduct">
+                </app-item-quantity>
+            </th>
+            <th>
+                <app-item-quantity [quantityProduct]="dashboard.quantityCategory" [description]="vcTotalCategory">
+                </app-item-quantity>
+            </th>
+            <th>
+                <app-item-quantity [quantityProduct]="dashboard.quantityMark" [description]="vcTotalMark">
+                </app-item-quantity>
+            </th>
+            <th>
+                <app-item-quantity [quantityProduct]="dashboard.quantityProvider" [description]="vcTotalProvider">
+                </app-item-quantity>
+            </th>
+            <th>
+                <app-item-quantity [quantityProduct]="dashboard.quantityUnit" [description]="vcTotalUnit">
+                </app-item-quantity>
+            </th>
+            <th>
+                <app-item-quantity [quantityProduct]="dashboard.quantityCustomer" [description]="vcCustomer">
+                </app-item-quantity>
+            </th>
+        </thead>
+    </table>
+</div>

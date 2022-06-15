@@ -1,0 +1,51 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>Detalle de la Venta</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<div class="container">
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="listData" matSort>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="PRODUCTO">
+                <mat-header-cell fxFlex="60%" *matHeaderCellDef mat-sort-header>PRODUCTO</mat-header-cell>
+                <mat-cell fxFlex="60%" *matCellDef="let row">{{row.productName}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="FECHA VENCIMIENTO">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>FECHA VENCIMIENTO</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">{{row.dateExpiration}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="CANTIDAD">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>CANTIDAD</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">{{row.saleAmount}}</mat-cell>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="PRECIO">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef mat-sort-header>PRECIO</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">{{row.salePrice}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="SELECCIONE">
+                <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
+                <mat-cell fxFlex="10%" *matCellDef="let row">
+                    <button mat-icon-button matTooltip="Editar">
+                        <mat-icon svgIcon="edit"></mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </table>
+        <mat-paginator [length]="totalElements" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5"
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>

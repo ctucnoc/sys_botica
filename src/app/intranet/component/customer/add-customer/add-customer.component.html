@@ -1,0 +1,84 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmCustomer.controls['id'].value?"Modificar Cliente":"Registrar Cliente"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmCustomer" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-label>TIPO DE DOCUMENTO</mat-label>
+                        <mat-select formControlName="idTypeDocument" (selectionChange)="onSelectValue($event.value)">
+                            <mat-option *ngFor="let type of typeDocuments" [value]="type.id" selected>
+                                {{type.description}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="frmCustomer.get('idTypeDocument')?.hasError('required')">
+                            Por favor, seleccione un valor
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="15" placeholder="NRO. DE DOCUMENTO" type="text"
+                            formControlName="numberDocument">
+                        <mat-error *ngIf="frmCustomer.get('numberDocument')?.hasError('required')">
+                            Por favor, ingrese un valor
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row" *ngIf="blPersonNatural">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="30" placeholder="NOMBRE" type="text" formControlName="firstName"
+                            appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row" *ngIf="blPersonNatural">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="APELLIDO" type="text" formControlName="lastName"
+                            appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row" *ngIf="!blPersonNatural">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="RAZON SOCIAL" type="text"
+                            formControlName="bussinesName" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="EMAIL" type="text" formControlName="email" appUpper>
+                        <mat-error *ngIf="frmCustomer.get('email')?.hasError('email')">
+                            Por favor, ingrese un email valido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="100" placeholder="DIRECCIÓN" type="text" formControlName="direcction"
+                            appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

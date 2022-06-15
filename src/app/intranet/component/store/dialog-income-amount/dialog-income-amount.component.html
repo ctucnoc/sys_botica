@@ -1,0 +1,43 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>Cantidad a Ingresar</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmIncomeAmount" (ngSubmit)="onSubmit()" autocomplete="off">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" mask="separator.2" placeholder="Precio de Compra" type="text" formControlName="purchaseprecio">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" mask="0*" placeholder="Cantidad" type="text" formControlName="amount">
+                        <mat-error *ngIf="frmIncomeAmount.get('amount')?.hasError('max')">
+                            la cantidad ingresada supera al stock actual
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" mask="separator.2" placeholder="Precio de Venta Unitario" type="text" formControlName="saleprice">
+                        <mat-error *ngIf="frmIncomeAmount.get('saleprice')?.hasError('required')">
+                            Por favor, Ingrese Precio de Venta
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

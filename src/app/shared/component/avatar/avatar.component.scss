@@ -1,0 +1,17 @@
+.circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    text-align: center;
+    line-height: 32px;
+    @media (min-width: 321px) {
+      font-size: 18px;
+    }    
+  
+    &--gray {
+      background: #f3f3f3;
+      color: black;
+    }
+    
+  }

@@ -1,0 +1,51 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmUser.controls['id'].value?"Modificar Usuario":"Registrar Usuario"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmUser" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="15" placeholder="IDENTIFICADOR UNICO" type="text" [readonly]="blReadonly" (keyup)="validateUserName($event)"
+                            formControlName="username" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="CORREO ELECTRONICO" type="text"
+                            formControlName="email" (keyup)="validateEmail($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="60" placeholder="NOMBRE COMPLETO" type="text"
+                            formControlName="fullname" (keyup)="validateFullName($event)" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-select placeholder="ESTADO" formControlName="state">
+                            <mat-option *ngFor="let state of states" [value]="state.id">
+                                {{state.description}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

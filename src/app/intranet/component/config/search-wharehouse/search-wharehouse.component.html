@@ -1,0 +1,17 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>Lista de Almacenes</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<div class="mat-elevation-z8">
+    <mat-selection-list #shoes [multiple]="false" matSort>
+        <mat-list-option *ngFor="let wharehouse of wharehouses" (click)="selectRow(wharehouse)">
+            <h3 matLine> {{wharehouse.name}} </h3>
+            <p matLine> {{wharehouse.type=='1'?'DISTRIBUCIÓN':'SUB ALMACÉN'}} </p>
+        </mat-list-option>
+    </mat-selection-list>
+    <mat-paginator [length]="totalElements" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="3" showFirstLastButtons>
+    </mat-paginator>
+</div>

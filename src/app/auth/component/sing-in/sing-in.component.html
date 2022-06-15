@@ -1,0 +1,43 @@
+<div class="container-form-login">
+    <form class="log-in-form" [formGroup]="frmSingIn" autocomplete="off">
+        <h3>Iniciar Sesión</h3>
+        <span *ngIf="msgError" class="full-width" style="text-align: left;color: red;">{{msgError}}</span>
+        <mat-form-field class="full-width">
+            <mat-label>Usuario</mat-label>
+            <input type="text" maxlength="15" matInput formControlName="username" autofocus="autofocus"
+                (keyup)="validateUserName($event)" (blur)="onBlur()" appUpper>
+            <button type="button" mat-button matSuffix mat-icon-button aria-label="Clear"
+                *ngIf="frmSingIn.value.username" (click)="clearUsername()">
+                <mat-icon svgIcon="cancel"></mat-icon>
+            </button>
+            <mat-error *ngIf="frmSingIn.get('username')?.hasError('required')">
+                Por Favor, Ingrese un usuario
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Contraseña</mat-label>
+            <input [type]="hide ? 'password' : 'text'" #password matInput formControlName="password">
+            <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+                <mat-icon [svgIcon]="getIcon()"></mat-icon>
+            </button>
+            <mat-error *ngIf="frmSingIn.get('password')?.hasError('required')">
+                Por Favor, Ingrese una contraseña
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Sucursal</mat-label>
+            <mat-select formControlName="idSubsidiary">
+                <mat-option *ngFor="let subsidiary of subsidiaries" [value]="subsidiary.id">
+                    {{subsidiary.name}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="frmSingIn.get('idSubsidiary')?.hasError('required')">
+                Por Favor, Seleccione una sucursal
+            </mat-error>
+        </mat-form-field>
+        <button class="btn" (click)="onSingIn()">
+            Ingresar
+        </button>
+    </form>
+</div>

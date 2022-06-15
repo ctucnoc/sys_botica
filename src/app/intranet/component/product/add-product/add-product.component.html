@@ -1,0 +1,127 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>{{frmProduct.controls['id'].value?"Modificar Producto":"Registrar Producto"}}</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<form [formGroup]="frmProduct" (ngSubmit)="onSubmit()">
+    <mat-card class="shipping-card">
+        <mat-card-content>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="90" placeholder="NOMBRE" type="text" formControlName="name" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="30" placeholder="NOMBRE CORTO" type="text"
+                            formControlName="summaryname" appUpper>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="100" placeholder="CÓDIGO DE BARRA" type="text"
+                            formControlName="barcode">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label id="example-radio-group-label">¿ES MEDICAMENTO?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="ismedicine">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="col">
+                    <label id="example-radio-group-label">¿CONTROL FECHA DE VENCIMIENTO?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="isexpiratedate">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="col">
+                    <label id="example-radio-group-label" style="padding-top: 100px;">¿NESECITA
+                        REFRIGERACIÓN?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="isrefrigeration">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>               
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col">
+                    <label id="example-radio-group-label">¿ES UN PRODUCTO CONTROLADO?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="iscontrolled">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="col">
+                    <label id="example-radio-group-label">¿CONTROL DE LOTE?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="isbatch">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="col">
+                    <label id="example-radio-group-label">¿ES GENERICO?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="isgeneric">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px;margin-bottom: 10px;">
+                <div class="col">
+                    <label id="example-radio-group-label">¿ES UN KIT?</label><br>
+                    <mat-radio-group aria-label="Select an option" formControlName="iskit">
+                        <mat-radio-button value="1">SI</mat-radio-button>
+                        <mat-radio-button value="0">NO</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="30" placeholder="CATEGORIA" type="text"
+                            formControlName="namecategory">
+                        <button mat-button matSuffix mat-icon-button aria-label="Clear" type="button" (click)="onSearchCategory()">
+                            <mat-icon svgIcon="search"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="30" placeholder="MARCA" type="text" formControlName="namemark">
+                        <button mat-button matSuffix mat-icon-button aria-label="Clear"type="button" (click)="onSearchMark()">
+                            <mat-icon svgIcon="search"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <input matInput maxlength="30" placeholder="UNIDAD PRODUCTO" type="text"
+                            formControlName="nameunit">
+                        <button mat-button matSuffix mat-icon-button aria-label="Clear" type="button" (click)="onSearchUnit()">
+                            <mat-icon svgIcon="search"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="btn" mat-raised-button type="submit">Guardar</button>
+        </mat-card-actions>
+    </mat-card>
+</form>
