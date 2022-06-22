@@ -17,12 +17,22 @@ export class NotificationService {
     }
 
     public success(msg: string, snackBar: MatSnackBar) {
-        this.config['panelClass'] = ['notification', 'success'];
+        this.config['panelClass'] = ['notification', 'success','green-snackbar'];
         snackBar.open(msg, '', this.config);
     }
 
     public warn(msg: string, snackBar: MatSnackBar) {
-        this.config['panelClass'] = ['notification', 'warn'];
+        this.config['panelClass'] = ['notification','warn','yellon-snackbar'];
+        snackBar.open(msg, '', this.config);
+    }
+
+    public info(msg: string, snackBar: MatSnackBar) {
+        this.config['panelClass'] = ['notification','info','blue-snackbar'];
+        snackBar.open(msg, '', this.config);
+    }
+
+    public danger(msg: string, snackBar: MatSnackBar) {
+        this.config['panelClass'] = ['notification','danger','red-snackbar'];
         snackBar.open(msg, '', this.config);
     }
 }

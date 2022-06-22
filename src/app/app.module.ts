@@ -11,6 +11,7 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { FORMATS } from 'src/app/shared/constants/sysBoticaConstant';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxMaskModule, IConfig } from 'ngx-mask'
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 const MASK_CONFIG: Partial<IConfig> = {
   validation: false,
@@ -43,6 +44,12 @@ const MASK_CONFIG: Partial<IConfig> = {
       provide: MAT_DATE_FORMATS,
       useValue: FORMATS
     },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, 
+      useValue: {
+        duration: 2500
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })
