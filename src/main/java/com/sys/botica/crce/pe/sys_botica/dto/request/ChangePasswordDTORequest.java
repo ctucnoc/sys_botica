@@ -3,7 +3,6 @@ package com.sys.botica.crce.pe.sys_botica.dto.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,22 +10,29 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLoinDTORequest {
+@Builder
+@ToString
+public class ChangePasswordDTORequest {
+	
+	@NotNull
+	@NotBlank
+	@NotEmpty
+	public String userName;
 
-	@NotNull(message = "no not null")
+	@NotNull
 	@NotBlank
 	@NotEmpty
-    private String username;
-	
-	@NotNull
-    private Long idSubsidiary;
+	private String password;
 	
 	@NotNull
 	@NotBlank
 	@NotEmpty
-    private String password;
+	private String newPassword;
+	
+	@NotNull
+	@NotBlank
+	@NotEmpty
+	private String confirmNewPassword;
 }

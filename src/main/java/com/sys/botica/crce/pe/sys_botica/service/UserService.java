@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import com.sys.botica.crce.pe.sys_botica.dto.HrefEntityDTO;
 import com.sys.botica.crce.pe.sys_botica.dto.UserDTO;
 import com.sys.botica.crce.pe.sys_botica.dto.UserLoginDTO;
+import com.sys.botica.crce.pe.sys_botica.dto.request.ChangePasswordDTORequest;
 import com.sys.botica.crce.pe.sys_botica.dto.request.UserDTORequest;
 
 public interface UserService {
@@ -17,4 +18,5 @@ public interface UserService {
 	public Page<UserDTO> findByFullNameAndUsername(String key_word, Pageable pageable);
 	public List<UserDTO> findAutoCompleteFullName(String key_word);
 	public UserLoginDTO findByUsername(String username);
+	public void changePassword(ChangePasswordDTORequest bean);
 }

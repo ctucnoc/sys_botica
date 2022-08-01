@@ -43,6 +43,18 @@ public final class SysBoticaConstant {
 	
 	//VERSION API
 	public static final String API_VERSION = "v1";
+	
+	//API CLOUDINARY
+	public static final String API_CLOUDINARY_NAME = "cloud_name";
+	public static final String API_CLOUDINARY_KEY = "api_key";
+	public static final String API_CLOUDINARY_SECRET = "api_secret";
+	
+	//CODE HTML TEMPLATE
+	public static final String HTML_SEND_EMAIL = "SEND_CODE_VERIFY";
+	
+	//NAME EMTERPRISE
+	public static final String TITLE_NAME_ENTERPRISE = "Huatatas Clud";
+
 
 	// =============================================================================================
 	// PATH DEL SISTEMA ADMINISTRADOR SYSCE
@@ -71,6 +83,7 @@ public final class SysBoticaConstant {
 	public static final String RESOURCE_USERS = RESOURCE_GENERIC + "/users";
 	public static final String RESOURCE_USERS_USER = "/user";
 	public static final String RESOURCE_GENERIC_AUTO_COMPLETE = "/auto-complete";
+	public static final String RESOURCE_GENERIC_CHANGE_PASSWORD = "/change-password";
 	public static final String RESOURCE_USERSUBSIDIARYS = RESOURCE_GENERIC + "/users-enterprises";
 	public static final String RESOURCE_USERSUBSIDIARYS_USERSUBSIDIARY = "/user-enterprise";
 	public static final String RESOURCE_SUBSIDIARYS = RESOURCE_GENERIC + "/subsidiaries";
@@ -117,7 +130,14 @@ public final class SysBoticaConstant {
 	public static final String RESOURCE_DASHBOARS = RESOURCE_GENERIC + "/dasboards";
 	public static final String RESOURCE_DASHBOARS_DASHBOAR = "/dasboard";
 	public static final String RESOURCE_REPORT_SALE_X_DATE = "/sale-x-date";
-
+	public static final String RESOURCE_FILES = RESOURCE_GENERIC + "/files";
+	public static final String RESOURCE_FILES_FILE = "/file";
+	public static final String RESOURCE_PRODUCTIMGS = RESOURCE_GENERIC + "/productImgs";
+	public static final String RESOURCE_PRODUCTIMGS_PRODUCTIMG = "/productImg";
+	public static final String RESOURCE_PRODUCT_ID = "/{idProduct}";
+	public static final String RESOURCE_VALIDATIONS = RESOURCE_GENERIC + "/validations";
+	public static final String RESOURCE_VALIDATIONS_VALIDATION = "/validation";
+	public static final String RESOURCE_VALIDATIONS_VALIDATION_SENDCODE = "/send-mail";
 
 	// =============================================================================================
 	// PATH DEL SISTEMA SYSCE FROENT-END
@@ -160,6 +180,7 @@ public final class SysBoticaConstant {
 	
 	public static final String TB_SYS_BOTICA_USER_AUTHORITY = "adm_user_authority";
 	public static final String TB_SYS_BOTICA_USER = "adm_user";
+	public static final String TB_SYS_BOTICA_PRODUCT_IMG = "adm_product_img";
 	public static final String TB_SYS_BOTICA_CUSTOMER = "adm_customer";
 	public static final String TB_SYS_BOTICA_AUTHORITY = "adm_authority";
 	public static final String TB_SYS_BOTICA_WHAREHOUSE = "adm_wharehouse";
@@ -171,6 +192,7 @@ public final class SysBoticaConstant {
 	public static final String TB_SYS_BOTICA_ENTRY_DOCUMENT = "util_entry_document";
 	public static final String TB_SYS_BOTICA_TYPE_DOCUMENT = "util_type_document";
 	public static final String TB_SYS_BOTICA_PROOF_PAYMENT = "util_proof_payment";
+	public static final String TB_SYS_BOTICA_HTML_TEMPLATE = "util_html_template";
 	public static final String TB_SYS_BOTICA_SALE = "adm_sale";
 	public static final String TB_SYS_BOTICA_DT_SALE = "adm_dt_sale";
 	
@@ -199,5 +221,15 @@ public final class SysBoticaConstant {
 	// =============================================================================================
 	
 	public static final String FILE_EXT_PDF = ".pdf";
+	
+	// =============================================================================================
+	// DATA GENERIC REPORT TICKET
+	// =============================================================================================
+	
+	public static final String TICKET_CRCE_NAME_DRUGSTORE = "SESY FARMA";
+	public static final String TICKET_CRCE_DISTRICT_DRUGSTORE = "AYACUCHO - HUAMANGA - AYACUCHO";
+	public static final String TICKET_CRCE_ADDRESS_DRUGSTORE = "AV. 26 DE ENERO 265";
+
+	
 
 }

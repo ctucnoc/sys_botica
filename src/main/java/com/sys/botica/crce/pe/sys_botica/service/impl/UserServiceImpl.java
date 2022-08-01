@@ -3,15 +3,19 @@ package com.sys.botica.crce.pe.sys_botica.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sys.botica.crce.pe.sys_botica.constant.SysBoticaConstant;
 import com.sys.botica.crce.pe.sys_botica.dto.HrefEntityDTO;
 import com.sys.botica.crce.pe.sys_botica.dto.UserDTO;
 import com.sys.botica.crce.pe.sys_botica.dto.UserLoginDTO;
+import com.sys.botica.crce.pe.sys_botica.dto.request.ChangePasswordDTORequest;
 import com.sys.botica.crce.pe.sys_botica.dto.request.UserDTORequest;
 import com.sys.botica.crce.pe.sys_botica.errorhandler.SysBoticaEntityNotFoundException;
 import com.sys.botica.crce.pe.sys_botica.errorhandler.SysBoticaEntityUnprocessableException;
@@ -24,17 +28,30 @@ import com.sys.botica.crce.pe.sys_botica.service.UserService;
 import com.sys.botica.crce.pe.sys_botica.util.SysBoticaResource;
 import com.sys.botica.crce.pe.sys_botica.util.SysBoticaUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
 
-	final UserRepository userRepository;
-	final SysBoticaUtil sysBoticaUtil;
-	final SecurityPolicyRepository securityPolicyRepository;
+	final 
+	UserRepository userRepository;
+	
+	final 
+	SysBoticaUtil sysBoticaUtil;
+	
+	final 
+	SecurityPolicyRepository securityPolicyRepository;
+	
+	final
+	PasswordEncoder passwordEncoder;
 
-	public UserServiceImpl(UserRepository userRepository,SysBoticaUtil sysBoticaUtil,SecurityPolicyRepository securityPolicyRepository) {
+	public UserServiceImpl(UserRepository userRepository,SysBoticaUtil sysBoticaUtil,SecurityPolicyRepository securityPolicyRepository,PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.sysBoticaUtil = sysBoticaUtil;
 		this.securityPolicyRepository = securityPolicyRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -108,6 +125,19 @@ public class UserServiceImpl implements UserService{
 		return UserLoginDTO.builder().email(bean.getEmail()).fullname(bean.getFullName()).password(bean.getPassword())
 				.state(bean.getState() == SysBoticaConstant.STATE_ACTIVE ? true : false).username(bean.getUsername())
 				.build();
+	}
+
+	@Override
+	public void changePassword(ChangePasswordDTORequest bean) {
+		log.info("crce service changePassword {} "+bean.toString());
+		if(!bean.getNewPassword().equals(bean.getConfirmNewPassword()))
+			throw new SysBoticaGenericClientException("the new passwords do not match", HttpStatus.BAD_REQUEST);
+		User user = this.userRepository.findByUsernameAndState(bean.userName.toUpperCase(),SysBoticaConstant.STATE_ACTIVE).orElseThrow(()-> new SysBoticaEntityNotFoundException("not found user"));
+		if(!passwordEncoder.matches(bean.getPassword(), user.getPassword()))
+			throw new SysBoticaGenericClientException("the user does not match", HttpStatus.BAD_REQUEST);
+		user.setPassword(this.passwordEncoder.encode(bean.getNewPassword()));
+		log.info("crce service update password correctly!");
+		this.userRepository.save(user);
 	}
 	
 }

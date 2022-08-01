@@ -5,48 +5,43 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import com.sys.botica.crce.pe.sys_botica.constant.SysBoticaConstant;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @Builder
 @Entity
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = SysBoticaConstant.TB_SYS_BOTICA_USER, schema = SysBoticaConstant.SCHEMA_SYS_BOTICA_CRCEGU)
-public class User {
-
+@Table(name = SysBoticaConstant.TB_SYS_BOTICA_PRODUCT_IMG, schema = SysBoticaConstant.SCHEMA_SYS_BOTICA_CRCE)
+public class ProductImg {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
-	@Column(name = "username")
-	private String username;
-	
-	@Column(name = "password")
-	private String password;
-	
-	@Column(name = "fullname")
-	private String fullName;
-	
-	@Column(name = "email")
-	private String email;
+
+	@Column(name = "name")
+	private String name;
+
+	@Column(name = "url")
+	private String url;
+
+	@Column(name = "type")
+	private String type;
+
+	@Column(name = "id_api")
+	private String idApi;
 	
 	@Column(name = "state")
 	private String state;
-	
-	@Column(name = "numberattempts")
-	private int numberattempts;
-	
-	@Column(name = "passwordchangefirstlogin")
-	private String passwordchangefirstlogin;
+
+	@ManyToOne
+	@JoinColumn(name = "idproduct")
+	private Product product;
 }

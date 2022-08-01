@@ -55,6 +55,9 @@ public class ReportServiceImpl implements ReportService{
 		Map<String, Object> parametro = new HashMap<>();
 		String nro_ticket = SysBoticaUtil.toDigitExtract(sale.getProofPayment().getDescription(),2)+""+SysBoticaUtil.zfill(String.valueOf(sale.getProofPayment().getId()), 2) +"-"+SysBoticaUtil.zfill(String.valueOf(sale.getId()), 8);
 		parametro.put("p_nro_ticket", nro_ticket);
+		parametro.put("p_name_drugstore", SysBoticaConstant.TICKET_CRCE_NAME_DRUGSTORE);
+		parametro.put("p_district", SysBoticaConstant.TICKET_CRCE_DISTRICT_DRUGSTORE);
+		parametro.put("p_address", SysBoticaConstant.TICKET_CRCE_ADDRESS_DRUGSTORE);
 		parametro.put("p_nro_documento", SysBoticaConstant.VC_NRO_DOCUMENTO);
 		parametro.put("p_nro_cel", SysBoticaConstant.VC_NR_TELEPHONE);
 		parametro.put("p_forma_pago", SysBoticaConstant.VC_TYPE_SALE);

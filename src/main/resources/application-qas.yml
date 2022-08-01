@@ -33,3 +33,8 @@ spring:
 jwt:
   secret: Sistemas27$@pERu2o20crce.Fl
   expiration: 56000000
+  
+cloudinary:
+  name: unsch
+  key: 875145843333534
+  secret: UHYevQigSce6VQFV_c8rj76O384

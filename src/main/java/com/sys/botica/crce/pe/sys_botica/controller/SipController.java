@@ -34,7 +34,7 @@ public class SipController {
 	
     @PostMapping(SysBoticaConstant.RESOURCE_LOGIN)
     public ResponseEntity<UserResponseDTO> login(@Valid @RequestBody UserLoinDTORequest dto){
-    	log.info("login -> {} " + dto);
+    	log.info("crce controller login -> {} " + dto.toString());
         final String userAndRuc=String.format("%s%s%s",dto.getUsername().trim(),String.valueOf(Character.LINE_SEPARATOR),dto.getIdSubsidiary());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userAndRuc, dto.getPassword()));
         UserDetailDTO user = (UserDetailDTO) authentication.getPrincipal();

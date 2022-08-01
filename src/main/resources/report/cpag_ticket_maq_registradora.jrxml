@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cpag_ticket_maq_registradora" pageWidth="283" pageHeight="708" columnWidth="243" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b3f1829c-e7f2-4479-b460-8a27d58cac4e">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cpag_ticket_maq_registradora" pageWidth="283" pageHeight="680" columnWidth="243" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b3f1829c-e7f2-4479-b460-8a27d58cac4e">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CONEXION_POSTGRESAL_ADMIN"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="cm"/>
+	<property name="com.jaspersoft.studio.unit." value="mm"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="mm"/>
 	<style name="Table_TH" isDefault="true" mode="Opaque" backcolor="#FFFFFF">
 		<pen lineWidth="0.0"/>
 		<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -78,6 +75,9 @@ de.idproduct = pr.id and ds.idsale =    $P!{p_fk_idsale}]]>
 	<parameter name="p_idsale" class="java.lang.Long"/>
 	<parameter name="p_vuelto" class="java.lang.Float"/>
 	<parameter name="p_total_letras" class="java.lang.String"/>
+	<parameter name="p_name_drugstore" class="java.lang.String"/>
+	<parameter name="p_district" class="java.lang.String"/>
+	<parameter name="p_address" class="java.lang.String"/>
 	<queryString language="plsql">
 		<![CDATA[select
 up.description as comprobante,
@@ -117,24 +117,6 @@ and sa.id =  $P!{p_idsale}]]>
 	</background>
 	<title>
 		<band height="127" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="28" width="243" height="20" uuid="a8ed8cdf-6124-4717-8311-0f118d2f7b34">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" isBold="false"/>
-				</textElement>
-				<text><![CDATA[JR. 28 DE JULIO NRO. 234]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="45" width="243" height="20" uuid="041a5e1e-90f1-49c7-93f6-407d1a5a4aea">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow"/>
-				</textElement>
-				<text><![CDATA[AYACUCHO-HUAMANGA-SAN JUAN BAUTISTA]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="43" y="80" width="167" height="20" uuid="8af212b8-48c5-4c9e-8367-b2522d8f8afa">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -158,7 +140,7 @@ and sa.id =  $P!{p_idsale}]]>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial Narrow" isBold="true"/>
+					<font fontName="Arial Narrow" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cel.:]]></text>
 			</staticText>
@@ -171,15 +153,27 @@ and sa.id =  $P!{p_idsale}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_nro_cel}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="0" y="0" width="243" height="28" uuid="dcb8351c-dc53-4723-9b52-e2c3c7d61c93">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
+			<textField>
+				<reportElement x="0" y="0" width="243" height="27" uuid="d06a8c4d-5113-4e16-a941-b1b56aa9ca62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="18" isBold="true"/>
 				</textElement>
-				<text><![CDATA[BOTICA SESY FARMA]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{p_name_drugstore}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="27" width="242" height="23" uuid="d79b3180-44d9-4221-9697-8434edad3ff2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_district}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="50" width="243" height="19" uuid="00201736-bbe8-4493-a28d-6bc7a6508734"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_address}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -219,7 +213,7 @@ and sa.id =  $P!{p_idsale}]]>
 				<text><![CDATA[Forma Pago:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="63" y="45" width="147" height="20" uuid="39581e72-cf66-425b-9743-f2ac5a3a7f8a">
+				<reportElement x="63" y="45" width="177" height="20" uuid="39581e72-cf66-425b-9743-f2ac5a3a7f8a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -228,7 +222,7 @@ and sa.id =  $P!{p_idsale}]]>
 				<textFieldExpression><![CDATA[$F{fecha_creacion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="63" y="66" width="147" height="20" uuid="47181264-f234-44b2-9db8-5c700d4df039">
+				<reportElement x="63" y="66" width="177" height="20" uuid="47181264-f234-44b2-9db8-5c700d4df039">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -237,7 +231,7 @@ and sa.id =  $P!{p_idsale}]]>
 				<textFieldExpression><![CDATA[$P{p_forma_pago}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="63" y="88" width="147" height="20" uuid="0a259491-d642-478b-8a86-f7d8bcfc2676">
+				<reportElement x="63" y="88" width="177" height="20" uuid="0a259491-d642-478b-8a86-f7d8bcfc2676">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -264,7 +258,7 @@ and sa.id =  $P!{p_idsale}]]>
 				<text><![CDATA[Vendedor:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="63" y="109" width="147" height="20" uuid="04591bd2-ea7b-445c-899c-e66e1a7a6ef9">
+				<reportElement x="63" y="109" width="177" height="20" uuid="04591bd2-ea7b-445c-899c-e66e1a7a6ef9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{fullname}]]></textFieldExpression>
@@ -287,11 +281,11 @@ and sa.id =  $P!{p_idsale}]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="60" uuid="407f0385-f703-4304-9b77-b78223a253c6">
+					<jr:column width="40" uuid="407f0385-f703-4304-9b77-b78223a253c6">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="60" height="30" uuid="38502aea-9f32-43ba-bb95-cfeeafbe27ac"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="38502aea-9f32-43ba-bb95-cfeeafbe27ac"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="Arial Narrow" size="10" isBold="true"/>
 								</textElement>
@@ -300,7 +294,7 @@ and sa.id =  $P!{p_idsale}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="60" height="30" uuid="8500ef3a-4ebc-43ba-ab98-bac4bd5ec1ac"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="8500ef3a-4ebc-43ba-ab98-bac4bd5ec1ac"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="Arial Narrow" size="10"/>
 								</textElement>
@@ -308,11 +302,11 @@ and sa.id =  $P!{p_idsale}]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="100" uuid="455966fc-101d-4c94-aa96-24e11f791a9a">
+					<jr:column width="130" uuid="455966fc-101d-4c94-aa96-24e11f791a9a">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="100" height="30" uuid="4d25f090-778a-4269-92b3-8f005abc29fb"/>
+								<reportElement x="0" y="0" width="130" height="30" uuid="4d25f090-778a-4269-92b3-8f005abc29fb"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="Arial Narrow" size="10" isBold="true"/>
 								</textElement>
@@ -321,7 +315,7 @@ and sa.id =  $P!{p_idsale}]]>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="100" height="30" uuid="2e0a7578-dca7-4619-8a29-0996072d45af"/>
+								<reportElement x="0" y="0" width="130" height="30" uuid="2e0a7578-dca7-4619-8a29-0996072d45af"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font fontName="Arial Narrow" size="10"/>
 								</textElement>
@@ -357,11 +351,11 @@ and sa.id =  $P!{p_idsale}]]>
 	<summary>
 		<band height="256" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="155" width="243" height="75" uuid="e0b5e724-3e60-4afb-81a1-6252bf9ab145"/>
-				<textElement textAlignment="Justified">
+				<reportElement x="0" y="140" width="243" height="90" uuid="e0b5e724-3e60-4afb-81a1-6252bf9ab145"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA["La devolución o cambio del producto es en un plazo máximo de 24 horas calendario desde la fecha en que se realizó la venta respectiva, pasado este tiempo podrás hacer uso de la garantía del producto dado por el fabricante (Ver Política de Garantía)"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Le cambio del producto es en un plazo máximo de 24 horas calendario desde la fecha en que se realizó la venta respectiva, pasado este tiempo podrás hacer uso de la garantía del producto dado por el fabricante (Ver Política de Garantía)"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="101" y="0" width="70" height="20" uuid="291b7c9f-4177-433b-91d8-a622a201f56b">
@@ -373,7 +367,7 @@ and sa.id =  $P!{p_idsale}]]>
 				<text><![CDATA[Total a Pagar:]]></text>
 			</staticText>
 			<image>
-				<reportElement x="72" y="70" width="70" height="70" uuid="80ffea29-5cd4-4e7b-a153-1f0c9a07c83f"/>
+				<reportElement x="80" y="66" width="70" height="72" uuid="80ffea29-5cd4-4e7b-a153-1f0c9a07c83f"/>
 				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
 new com.google.zxing.qrcode.QRCodeWriter().encode(
 $P{p_nro_ticket},
@@ -416,10 +410,10 @@ com.google.zxing.BarcodeFormat.QR_CODE, 900, 900))]]></imageExpression>
 				<textFieldExpression><![CDATA["SON: "+$P{p_total_letras} + " SOLES"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="236" width="243" height="20" uuid="b1fcb743-0dcd-4074-af6f-f63de200adb6">
+				<reportElement x="0" y="235" width="243" height="20" uuid="b1fcb743-0dcd-4074-af6f-f63de200adb6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="12"/>
 				</textElement>
 				<text><![CDATA[*** GRACIAS POR SU PREFERENCIA ***]]></text>

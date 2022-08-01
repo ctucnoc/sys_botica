@@ -1,5 +1,7 @@
 package com.sys.botica.crce.pe.sys_botica.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.sys.botica.crce.pe.sys_botica.constant.SysBoticaConstant;
+import com.sys.botica.crce.pe.sys_botica.dto.request.ChangePasswordDTORequest;
 import com.sys.botica.crce.pe.sys_botica.dto.request.UserDTORequest;
 import com.sys.botica.crce.pe.sys_botica.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping(SysBoticaConstant.API_VERSION + SysBoticaConstant.RESOURCE_USERS)
 @CrossOrigin(origins = SysBoticaConstant.PATH_FROTEND_SYSCE)
@@ -50,5 +56,12 @@ public class UserController {
 	@GetMapping(SysBoticaConstant.RESOURCE_USERS_USER + SysBoticaConstant.RESOURCE_GENERIC_AUTO_COMPLETE)
 	public ResponseEntity<?> findByAutoCompleteFullName(@RequestParam String key_word) {
 		return new ResponseEntity<>(this.userService.findAutoCompleteFullName(key_word), HttpStatus.OK);
+	}
+	
+	@PostMapping(SysBoticaConstant.RESOURCE_USERS_USER + SysBoticaConstant.RESOURCE_GENERIC_CHANGE_PASSWORD)
+	public ResponseEntity<HttpStatus> changePassword(@Valid @RequestBody ChangePasswordDTORequest dto){
+		log.info("crce change Password -> {} "+dto);
+		this.userService.changePassword(dto);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
