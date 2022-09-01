@@ -19,4 +19,6 @@ public class DashboardDTO {
 	private Integer quantityUnit;
 	private Integer quantityCustomer;
 	private List<VSaleDateDTO> lstSaleDate;
+	private List<DailySaleDTO> lstDailySale;
+	private List<MonthSaleDTO> lstMonthSale;
 }

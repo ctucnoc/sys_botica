@@ -166,6 +166,8 @@ public final class SysBoticaConstant {
 	public static final String SP_SEARCH_CUSTOMER_KEY_WORD_COUNT = "select count(*) from crce.sp_search_word_key_custommer(?1,?2)";
 	public static final String SP_SEARCH_PRODUCT_SALE = "select * from crce.sp_search_sale_parameter(?1,?2,?3,?4,?5)";
 	public static final String SP_SEARCH_PRODUCT_SALE_COUNT = "select count(*) from crce.sp_search_sale_parameter(?1,?2,?3,?4,?5)";
+	public static final String SP_FINDBY_DAILY_SALE = "{call crce.sp_get_daily_sale(?,?,?)}";
+	public static final String SP_FINDBY_MONTH_SALE = "{call crce.sp_get_month_sale(?,?,?)}";
 	public static final String VN_PASSWORDCHANGEFIRSTLOGIN = "1";
 	public static final String VN_NOT_PASSWORDCHANGEFIRSTLOGIN = "0";
 	public static final int QT_NUMBER_ATTEMPTS_DEFAULT = 0;
@@ -226,7 +228,7 @@ public final class SysBoticaConstant {
 	// DATA GENERIC REPORT TICKET
 	// =============================================================================================
 	
-	public static final String TICKET_CRCE_NAME_DRUGSTORE = "SESY FARMA";
+	public static final String TICKET_CRCE_NAME_DRUGSTORE = "SALUD SESYFARMA";
 	public static final String TICKET_CRCE_DISTRICT_DRUGSTORE = "AYACUCHO - HUAMANGA - AYACUCHO";
 	public static final String TICKET_CRCE_ADDRESS_DRUGSTORE = "AV. 26 DE ENERO 265";
 

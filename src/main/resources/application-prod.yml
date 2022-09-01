@@ -1,12 +1,12 @@
 server:
-  port: 9090
+  port: 8080
 
 spring:
   main:
     allow-circular-references: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5454/db_botica?useSSL=false
+    url: jdbc:postgresql://localhost:5432/db_botica?useSSL=false
     username: botica
     password: botica123
   jpa:
@@ -16,8 +16,8 @@ spring:
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
-    username: ctucno.indecopi@gmail.com
-    password: povalingepfcezbn
+    username: sesyfarma.botica@gmail.com
+    password: wgeglizqhnbtnmtb
     port: 587
     protocol: smtp
     properties:
@@ -28,7 +28,7 @@ spring:
          enable: true
 
 jwt:
-  secret: Sistemas27$@pERu2o20crce.Fl
+  secret: Sistem@s27$@pERu2o20crce.Fl
   expiration: 56000000
   
 

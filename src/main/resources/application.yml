@@ -4,6 +4,7 @@
 spring:
   profiles:
     active:
-    - ${PROFILE}
+#       - prod
+      ${PROFILE}
   banner:
     location: classpath:/config/banner.txt
