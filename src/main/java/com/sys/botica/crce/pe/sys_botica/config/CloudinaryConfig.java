@@ -1,19 +1,17 @@
 package com.sys.botica.crce.pe.sys_botica.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Builder
-@Getter
-@Setter
-@Configuration
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class CloudinaryConfig {
 
 	@Value("${cloudinary.name}")

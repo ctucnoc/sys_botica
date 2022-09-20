@@ -233,7 +233,7 @@ public final class SysBoticaUtil {
 
 	public static String saleTotal(Float number) {
 		return convertirNumero_Letras(String.valueOf(toIntExact(number)), true) + "CON "
-				+ String.valueOf(toIntExactDec(number)) + "/100";
+				+ String.valueOf(zfill(toIntExactDec(number).toString(), 2)) + "/100";
 	}
 
 	public static String toDigitExtract(String value, Integer nro_caracteres_extraer) {

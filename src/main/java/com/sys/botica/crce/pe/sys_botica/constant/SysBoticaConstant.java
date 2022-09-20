@@ -228,9 +228,9 @@ public final class SysBoticaConstant {
 	// DATA GENERIC REPORT TICKET
 	// =============================================================================================
 	
-	public static final String TICKET_CRCE_NAME_DRUGSTORE = "SALUD SESYFARMA";
+	public static final String TICKET_CRCE_NAME_DRUGSTORE = "BOTICA SALUD SESYFARMA";
 	public static final String TICKET_CRCE_DISTRICT_DRUGSTORE = "AYACUCHO - HUAMANGA - AYACUCHO";
-	public static final String TICKET_CRCE_ADDRESS_DRUGSTORE = "AV. 26 DE ENERO 265";
+	public static final String TICKET_CRCE_ADDRESS_DRUGSTORE = "AV. 26 DE ENERO NRO.265";
 
 	
 

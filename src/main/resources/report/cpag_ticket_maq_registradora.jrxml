@@ -156,7 +156,7 @@ and sa.id =  $P!{p_idsale}]]>
 			<textField>
 				<reportElement x="0" y="0" width="243" height="27" uuid="d06a8c4d-5113-4e16-a941-b1b56aa9ca62"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="18" isBold="true"/>
+					<font fontName="Arial Narrow" size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{p_name_drugstore}]]></textFieldExpression>
 			</textField>
@@ -179,7 +179,7 @@ and sa.id =  $P!{p_idsale}]]>
 	<pageHeader>
 		<band height="129" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="23" width="243" height="20" uuid="cbe482ac-161d-4d16-9ec3-fd8253088829"/>
+				<reportElement x="0" y="19" width="243" height="20" uuid="cbe482ac-161d-4d16-9ec3-fd8253088829"/>
 				<textElement textAlignment="Center">
 					<font fontName="Arial Narrow" size="12" isBold="true"/>
 				</textElement>
@@ -351,11 +351,11 @@ and sa.id =  $P!{p_idsale}]]>
 	<summary>
 		<band height="256" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="140" width="243" height="90" uuid="e0b5e724-3e60-4afb-81a1-6252bf9ab145"/>
+				<reportElement x="0" y="160" width="243" height="60" uuid="e0b5e724-3e60-4afb-81a1-6252bf9ab145"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Le cambio del producto es en un plazo máximo de 24 horas calendario desde la fecha en que se realizó la venta respectiva, pasado este tiempo podrás hacer uso de la garantía del producto dado por el fabricante (Ver Política de Garantía)"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Le cambio del producto es en un plazo máximo de 24 horas calendario desde la fecha en que se realizó la venta respectiva, pasado este tiempo no podra realizar el cambio"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="101" y="0" width="70" height="20" uuid="291b7c9f-4177-433b-91d8-a622a201f56b">
@@ -367,17 +367,17 @@ and sa.id =  $P!{p_idsale}]]>
 				<text><![CDATA[Total a Pagar:]]></text>
 			</staticText>
 			<image>
-				<reportElement x="80" y="66" width="70" height="72" uuid="80ffea29-5cd4-4e7b-a153-1f0c9a07c83f"/>
+				<reportElement x="72" y="65" width="87" height="87" uuid="80ffea29-5cd4-4e7b-a153-1f0c9a07c83f"/>
 				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
 new com.google.zxing.qrcode.QRCodeWriter().encode(
 $P{p_nro_ticket},
 com.google.zxing.BarcodeFormat.QR_CODE, 900, 900))]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="167" y="0" width="73" height="20" uuid="117e9fad-deab-4132-bbd7-d3d59b3ca016">
+				<reportElement x="167" y="0" width="76" height="20" uuid="117e9fad-deab-4132-bbd7-d3d59b3ca016">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["S/. "+$F{total}]]></textFieldExpression>
@@ -392,10 +392,10 @@ com.google.zxing.BarcodeFormat.QR_CODE, 900, 900))]]></imageExpression>
 				<text><![CDATA[Vuelto:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="167" y="20" width="73" height="20" uuid="e72d57ea-28a9-4bc9-a1f7-ba091442a06f">
+				<reportElement x="167" y="20" width="76" height="20" uuid="e72d57ea-28a9-4bc9-a1f7-ba091442a06f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Right">
 					<font fontName="Arial Narrow" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["S/. "+$P{p_vuelto}]]></textFieldExpression>
