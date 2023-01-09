@@ -63,8 +63,12 @@ public class UserServiceImpl implements UserService{
 		SegurityPolicy policy = this.securityPolicyRepository
 				.findByCodesecuritypolicy(SysBoticaConstant.VN_CODE_SECURITY_POLICY)
 				.orElseThrow(() -> new SysBoticaEntityNotFoundException("not found"));
-		User bean = User.builder().username(user.getUsername()).password(user.getUsername())
-				.fullName(user.getFullname()).state(user.getState()).email(user.getEmail())
+		User bean = User.builder()
+				.username(user.getUsername())
+				.password(this.passwordEncoder.encode(user.getUsername()))
+				.fullName(user.getFullname())
+				.state(user.getState())
+				.email(user.getEmail())
 				.numberattempts(SysBoticaConstant.QT_NUMBER_ATTEMPTS_DEFAULT)
 				.passwordchangefirstlogin(
 						policy.getPasswordchangefirstlogin().equals(SysBoticaConstant.VN_PASSWORDCHANGEFIRSTLOGIN)

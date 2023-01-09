@@ -9,5 +9,7 @@ public interface ReportService {
 	public void mkReportSaleDate(String dateFrom, String dateTo,String token,OutputStream outputStream) throws JRException,IOException;
 	
 	public byte[] mkReporteTicket(String name,Long idsale) throws JRException,IOException;
+	
+	public void mkReportWharehouseproduct(Long idwharehouse, String token, OutputStream outputStream) throws JRException, IOException;
 
 }

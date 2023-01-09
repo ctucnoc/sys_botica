@@ -1,5 +1,5 @@
 FROM openjdk:11
-COPY "./target/*.jar" "botica-admin.jar"
-EXPOSE 9090
-ENV JAVA_OPTS="-Dspring.profiles.active=prod"
-ENTRYPOINT ["java","-jar","botica-admin.jar"]
+COPY target/sys_botica.jar application.jar
+EXPOSE 8080
+ENV JAVA_OPTS="-Dspring.profiles.active=dev"
+CMD ["java","-jar","application.jar"]

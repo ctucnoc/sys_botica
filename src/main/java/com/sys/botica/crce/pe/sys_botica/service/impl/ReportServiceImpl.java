@@ -15,6 +15,7 @@ import com.sys.botica.crce.pe.sys_botica.errorhandler.SysBoticaEntityNotFoundExc
 import com.sys.botica.crce.pe.sys_botica.model.Sale;
 import com.sys.botica.crce.pe.sys_botica.report.ReportModel;
 import com.sys.botica.crce.pe.sys_botica.repository.SaleRepository;
+import com.sys.botica.crce.pe.sys_botica.repository.WharehouseRepository;
 import com.sys.botica.crce.pe.sys_botica.security.JwtProvider;
 import com.sys.botica.crce.pe.sys_botica.service.ReportService;
 import com.sys.botica.crce.pe.sys_botica.util.SysBoticaUtil;
@@ -39,13 +40,17 @@ public class ReportServiceImpl implements ReportService{
 	
 	final
 	SysBoticaUtil sysBoticaUtil;
+	
+	final
+	WharehouseRepository wharehouseRepository;
 
-	public ReportServiceImpl(ReportModel reportModel,SaleRepository saleRepository,GenericDAO genericDAO,JwtProvider jwtProvider,SysBoticaUtil sysBoticaUtil) {
+	public ReportServiceImpl(ReportModel reportModel,SaleRepository saleRepository,GenericDAO genericDAO,JwtProvider jwtProvider,SysBoticaUtil sysBoticaUtil, WharehouseRepository wharehouseRepository) {
 		this.reportModel = reportModel;
 		this.saleRepository = saleRepository;
 		this.genericDAO = genericDAO;
 		this.jwtProvider = jwtProvider;
 		this.sysBoticaUtil = sysBoticaUtil;
+		this.wharehouseRepository = wharehouseRepository;
 	}
 
 	@Override
@@ -85,6 +90,20 @@ public class ReportServiceImpl implements ReportService{
 	public byte[] mkReporteTicket(String name, Long idsale) throws JRException, IOException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void mkReportWharehouseproduct(Long idwharehouse, String token, OutputStream outputStream) throws JRException, IOException{
+		if(!this.wharehouseRepository.existsByIdAndState(idwharehouse, SysBoticaConstant.STATE_ACTIVE))
+			throw new SysBoticaEntityNotFoundException("the warehouse does not exist");
+		Map<String, Object> parametro = new HashMap<>();
+		String[] userAndSubsidiary= StringUtils.split(this.jwtProvider.getUsername(this.sysBoticaUtil.resolveToken(token)),String.valueOf(Character.LINE_SEPARATOR));
+		parametro.put("p_idwharehouse", idwharehouse);
+		parametro.put("p_user", userAndSubsidiary[0]);
+		parametro.put("p_date", new Date().toString());
+		parametro.put("p_img", "classpath:img" + File.separator + "logo.png");
+		JasperPrint jasperPrint=this.reportModel.mkReport(SysBoticaConstant.RESOURCE_REPORT_TOTAL_PRODUCT_WHAREHOUSE,parametro);
+		JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
 	}
 
 }

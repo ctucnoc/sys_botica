@@ -14,4 +14,7 @@ public interface UnitRespository extends JpaRepository<Unit, Integer>{
 	public Page<Unit> findByDescriptionAndState(String key_word,String state,Pageable pageable);
 	
 	public Optional<Unit> findUnitByIdAndState(Integer id, String state);
+	
+	@Query("select count(u) > 0 from Unit u where u.initials=?1 or u.description=?2")
+	public Boolean existsByInitialsAndDescription(String initials,String description);
 }

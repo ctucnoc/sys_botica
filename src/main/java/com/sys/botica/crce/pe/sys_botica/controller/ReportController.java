@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,5 +47,15 @@ public class ReportController {
 		this.reportService.mkReportSaleDate(dateFrom, dateTo, Authorization, outputStream);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}	
+	
+	@GetMapping(SysBoticaConstant.RESOURCE_REPORTS_REPORT + SysBoticaConstant.RESOURCE_REPORT_PRODUCT_WHAREHOUSE)
+	public ResponseEntity<?> findByProductAllWharehouse(@PathVariable Long idwharehouse, @RequestHeader String Authorization) throws IOException, JRException{
+		log.info("generated report -> {} "+idwharehouse + " " +idwharehouse);
+		response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "TI01-000001" + SysBoticaConstant.FILE_EXT_PDF);
+		OutputStream outputStream = response.getOutputStream();
+		this.reportService.mkReportWharehouseproduct(idwharehouse, Authorization, outputStream);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
 
 }

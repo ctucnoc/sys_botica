@@ -53,7 +53,7 @@ public final class SysBoticaConstant {
 	public static final String HTML_SEND_EMAIL = "SEND_CODE_VERIFY";
 	
 	//NAME EMTERPRISE
-	public static final String TITLE_NAME_ENTERPRISE = "Huatatas Clud";
+	public static final String TITLE_NAME_ENTERPRISE = "Botica Salud Sesyfarma";
 
 
 	// =============================================================================================
@@ -130,6 +130,7 @@ public final class SysBoticaConstant {
 	public static final String RESOURCE_DASHBOARS = RESOURCE_GENERIC + "/dasboards";
 	public static final String RESOURCE_DASHBOARS_DASHBOAR = "/dasboard";
 	public static final String RESOURCE_REPORT_SALE_X_DATE = "/sale-x-date";
+	public static final String RESOURCE_REPORT_PRODUCT_WHAREHOUSE = "/product-all/{idwharehouse}";
 	public static final String RESOURCE_FILES = RESOURCE_GENERIC + "/files";
 	public static final String RESOURCE_FILES_FILE = "/file";
 	public static final String RESOURCE_PRODUCTIMGS = RESOURCE_GENERIC + "/productImgs";
@@ -217,6 +218,7 @@ public final class SysBoticaConstant {
 	// =============================================================================================
 	public static final String RESOURCE_VAUCHER_TICKET = "cpag_ticket_maq_registradora";
 	public static final String RESOURCE_REPORT_SALE_DATE = "rport_total_sale_x_date";
+	public static final String RESOURCE_REPORT_TOTAL_PRODUCT_WHAREHOUSE = "rport_total_product_wharehouse_sale";
 	
 	// =============================================================================================
 	// EXTENCIONES DE LOS ARCHIVOS

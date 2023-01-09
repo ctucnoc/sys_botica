@@ -8,36 +8,38 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ResourceUtils;
 import com.sys.botica.crce.pe.sys_botica.errorhandler.SysBoticaGenericClientException;
 import lombok.extern.slf4j.Slf4j;
-import java.io.File;
 
 @Slf4j
 public class ReportGeneric {
 
-	private String reportParent;
-	
+	private Resource reportParent;
+
 	private String reportLogo;
-	
+
 	private Connection connection;
+
 
 	public ReportGeneric(Connection connection) {
 		this.connection = connection;
 	}
 
-	public JasperPrint mkReport(String name,String userId) throws JRException {
+	public JasperPrint mkReport(String name, String userId) throws JRException {
 		JasperPrint jasperPrint = null;
 		JasperReport jasperReport = null;
 		Map<String, Object> parametro = null;
+		log.info("crce report -> {}"+getReportParent());
 		try {
-			File img_logo=ResourceUtils.getFile(getReportLogo());
-			File file = ResourceUtils.getFile(getReportParent());
-			jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			log.info("crce report generic path img -> {} " + getReportLogo());
+			// File img_logo=ResourceUtils.getFile(getReportLogo());
+			// File file = ResourceUtils.getFile(getReportParent());
+			jasperReport = JasperCompileManager.compileReport(getReportParent().getInputStream());
 			parametro = new HashMap<>();
-			parametro.put("REPORT_LOGO", img_logo.getAbsolutePath());
-			System.out.println(img_logo.getAbsolutePath());
+			parametro.put("REPORT_LOGO", getReportLogo());
+			log.info("crce report generic -> {} " + getReportLogo());
 			parametro.put("REPORT_USER", userId);
 			jasperPrint = JasperFillManager.fillReport(jasperReport, parametro, connection);
 			connection.close();
@@ -59,8 +61,8 @@ public class ReportGeneric {
 		JasperReport jasperReport = null;
 		Map<String, Object> parametro = null;
 		try {
-			File file = ResourceUtils.getFile(getReportParent());
-			jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			// File file = ResourceUtils.getFile(getReportParent());
+			jasperReport = JasperCompileManager.compileReport(getReportParent().getInputStream());
 			parametro = prmt;
 			jasperPrint = JasperFillManager.fillReport(jasperReport, parametro, connection);
 			connection.close();
@@ -82,8 +84,8 @@ public class ReportGeneric {
 		JasperReport jasperReport = null;
 		Map<String, Object> parametro = null;
 		try {
-			File file = ResourceUtils.getFile(getReportParent());
-			jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			// File file = ResourceUtils.getFile(getReportParent());
+			jasperReport = JasperCompileManager.compileReport(getReportParent().getInputStream());
 			parametro = new HashMap<>();
 			if (keys.length == values.length && keys != null && values != null) {
 				for (int i = 0; i < values.length; i++) {
@@ -109,11 +111,11 @@ public class ReportGeneric {
 		return jasperPrint;
 	}
 
-	public String getReportParent() {
+	public Resource getReportParent() {
 		return reportParent;
 	}
 
-	public void setReportParent(String reportParent) {
+	public void setReportParent(Resource reportParent) {
 		this.reportParent = reportParent;
 	}
 
@@ -124,7 +126,5 @@ public class ReportGeneric {
 	public void setReportLogo(String reportLogo) {
 		this.reportLogo = reportLogo;
 	}
-	
 
 }
-

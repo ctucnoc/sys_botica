@@ -18,4 +18,6 @@ public interface WharehouseRepository extends JpaRepository<Wharehouse, Long>{
 	public Boolean existsByNameAndState(String name, String state);
 	
 	public List<Wharehouse> findByTypewharehouseAndState(String type,String state);
+	
+	public Boolean existsByIdAndState(Long id, String state);
 }

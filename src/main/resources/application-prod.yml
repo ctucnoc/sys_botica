@@ -6,7 +6,7 @@ spring:
     allow-circular-references: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/db_botica?useSSL=false
+    url: jdbc:postgresql://host.docker.internal:5432/db_botica?useSSL=false
     username: botica
     password: botica123
   jpa:

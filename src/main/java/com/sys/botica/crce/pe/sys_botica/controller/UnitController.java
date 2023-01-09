@@ -17,6 +17,9 @@ import com.sys.botica.crce.pe.sys_botica.constant.SysBoticaConstant;
 import com.sys.botica.crce.pe.sys_botica.dto.request.UnitDTORequest;
 import com.sys.botica.crce.pe.sys_botica.service.UnitService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping(SysBoticaConstant.API_VERSION + SysBoticaConstant.RESOURCE_UNITS)
 @CrossOrigin(origins = SysBoticaConstant.PATH_FROTEND_SYSCE)
@@ -40,11 +43,13 @@ public class UnitController {
 
 	@PostMapping(SysBoticaConstant.RESOURCE_UNITS_UNIT)
 	public ResponseEntity<?> save(@RequestBody UnitDTORequest unit) {
+		log.info("crce save -> {} "+unit.toString());
 		return new ResponseEntity<>(this.unitService.save(unit), HttpStatus.OK);
 	}
 
 	@PutMapping(SysBoticaConstant.RESOURCE_UNITS_UNIT + SysBoticaConstant.RESOURCE_GENERIC_ID)
 	public ResponseEntity<?> update(@RequestBody UnitDTORequest unit, @PathVariable Integer id) {
+		log.info("crce update -> {} "+id);
 		return new ResponseEntity<>(this.unitService.update(unit, id), HttpStatus.OK);
 	}
 

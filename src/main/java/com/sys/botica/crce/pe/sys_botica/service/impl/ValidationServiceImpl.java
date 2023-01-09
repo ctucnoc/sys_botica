@@ -50,7 +50,7 @@ public class ValidationServiceImpl implements ValidationService{
 		dto.setTo(to);
 		dto.setSubject("CÓDIGO DE VERIFICACIÓN");
 		dto.setHtmlTemplate(bHtmlTemplate.getContent());
-		dto.setData(this.dataEmail("54321","parroquiano"));
+		dto.setData(this.dataEmail("54321","CRISTIAN TUCNO CONDE"));
 		this.mailService.sendEmail(dto);
 		
 	}
