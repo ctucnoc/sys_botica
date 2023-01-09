@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { MarkService } from 'src/app/shared/service/api/mark.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 
@@ -23,10 +23,18 @@ export class SearchMarkComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialoRef: MatDialogRef<SearchMarkComponent>,
     private _markService: MarkService
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
 
   ngAfterViewInit() {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
@@ -66,11 +74,13 @@ export class SearchMarkComponent implements AfterViewInit {
   }
 
   findByDescription(key_word: string) {
-    this._markService.findAll(key_word, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL_SEARCH).subscribe(data => {
-      this.marks = data.content;
-      this.listData = new MatTableDataSource(this.marks);
-      this.totalElements = data.totalElements;
-    });
+    this.subscriptions.push(
+      this._markService.findAll(key_word, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL_SEARCH).subscribe(data => {
+        this.marks = data.content;
+        this.listData = new MatTableDataSource(this.marks);
+        this.totalElements = data.totalElements;
+      })
+    );
   }
 
 }

@@ -7,6 +7,8 @@ export abstract class SysBoticaConstant {
     static readonly MESSAGE_OBJECT_UPDATE: string = 'Correctamente Actualizado';
     static readonly MESSAGE_OBJECT_ADD: string = 'Correctamente Registrado';
     static readonly MESSAGE_OBJECT_DELETE: string = 'Correctamente Eliminado';
+    static readonly MESSAGE_UPLOAD_FILE_SIZE: string = 'El tamaño del archivo debe ser menor a 5MB';
+    static readonly MESSAGE_UPLOAD_FILE_EXTEND: string = 'Archivo no permitido, seleccione una imagen';
 
     // recursos del sistema
     static readonly RESOURCE_HOME_INIT: string = 'intranet/dashboard';
@@ -44,6 +46,7 @@ export abstract class SysBoticaConstant {
     static readonly TITLE_PAGE_SING_IN: string = ' | Inicio Sessión';
     static readonly TITLE_PAGE_SING_OUT: string = ' | Cerrar Sessión';
     static readonly TITLE_PAGE_AUTHORITY: string = ' | Rol';
+    static readonly TITLE_PAGE_CHANGE_PASSWORD: string = ' | cambiar contraseña';
     static readonly TITLE_PAGE_WHAREHOUSE_SUBSIDIARY: string = ' | Almacén por Sucursal';
     static readonly TITLE_PAGE_PROVAIDER: string = ' | Proveedor';
     static readonly TITLE_PAGE_WHAREHOUSE: string = ' | Almacén';
@@ -52,10 +55,13 @@ export abstract class SysBoticaConstant {
     static readonly TITLE_PAGE_SALE_PRODUCT: string = ' | Realizar Venta';
     static readonly TITLE_PAGE_SALE_PRODUCT_SEARCH: string = ' | Consultar Venta';
     static readonly TITLE_PAGE_REPORT_SALE_DATE: string = ' | Reporte Venta';
+    static readonly TITLE_PAGE_REPORT_PRODUCT_WHAREHOUSE: string = ' | Reporte Productos';
 
     // localstorage
     static readonly STORAGE_ACCESS_TOKEN: string = 'AVCR1M234GHHDLLSD';
     static readonly STORAGE_USER_NAME: string = 'AVCR1M234GHHDLLLD';
+    static readonly STORAGE_USER: string = 'AVCR1M234GHHDLUUD';
+    static readonly STORAGE_ID_SUBSIDIARY = 'AVCE13234GHHDLLLD';
     static readonly STORAGE_AUTHORITIES: string = 'AVCR13234GHHDLLLD';
     static readonly STORAGE_IS_LOGGED_IN: string = 'AVCR13234GHHLLLDD';
 
@@ -63,12 +69,16 @@ export abstract class SysBoticaConstant {
     static readonly MSG_NOT_FOUND_USER: string = 'Usuario no Encontrado';
     static readonly MSG_INTERNAL_SERVER_ERROR: string = 'Error Interno Servidor';
 
-    static readonly MSG_TOTAL_PRODUCT:string = 'Total Productos';
-    static readonly MSG_TOTAL_UNIT:string = 'Total unidades';
-    static readonly MSG_TOTAL_PROVIDER:string = 'Total proveedores';
-    static readonly MSG_TOTAL_CATEGORY:string = 'Total categoria';
-    static readonly MSG_TOTAL_MARK:string = 'Total marcas';
-    static readonly MSG_TOTAL_CUSTOMER:string = 'Total clientes';
+    static readonly MSG_TOTAL_PRODUCT: string = 'Total Productos';
+    static readonly MSG_TOTAL_UNIT: string = 'Total unidades';
+    static readonly MSG_TOTAL_PROVIDER: string = 'Total proveedores';
+    static readonly MSG_TOTAL_CATEGORY: string = 'Total categoria';
+    static readonly MSG_TOTAL_MARK: string = 'Total marcas';
+    static readonly MSG_TOTAL_CUSTOMER: string = 'Total clientes';
+
+    // title report
+    static readonly TITLE_REPORT_SELE_DAY: string = 'Venta del dia';
+    static readonly TITLE_REPORT_SELE_MONTH: string = 'Venta del mes';
 
 }
 

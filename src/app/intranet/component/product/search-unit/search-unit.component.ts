@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { UnitService } from 'src/app/shared/service/api/unit.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 
@@ -23,12 +23,20 @@ export class SearchUnitComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialoRef: MatDialogRef<SearchUnitComponent>,
     private _unitService: UnitService
   ) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit() {
@@ -61,11 +69,13 @@ export class SearchUnitComponent implements OnInit {
   }
 
   public findByDescription(key_word: any) {
-    this._unitService.findAll(key_word, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL_SEARCH).subscribe(data => {
-      this.units = data.content;
-      this.listData = new MatTableDataSource(this.units);
-      this.totalElements = data.totalElements;
-    });
+    this.subscriptions.push(
+      this._unitService.findAll(key_word, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL_SEARCH).subscribe(data => {
+        this.units = data.content;
+        this.listData = new MatTableDataSource(this.units);
+        this.totalElements = data.totalElements;
+      })
+    );
   }
 
   selectRow(row: any) {

@@ -14,7 +14,7 @@ import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 @Component({
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
-  styleUrls: ['./add-product.component.scss']
+  styleUrls: ['./add-product.component.scss'],
 })
 export class AddProductComponent implements OnInit {
 

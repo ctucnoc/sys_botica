@@ -6,7 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthorityService } from 'src/app/shared/service/api/authority.service';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddAuthorityComponent } from '../add-authority/add-authority.component';
@@ -30,6 +30,8 @@ export class ListAuthorityComponent implements OnInit, AfterViewInit {
   public displayedColumns: string[] = ['ROL', 'DESCRIPCIÓN', 'SELECCIONE'];
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _authorityService: AuthorityService,
     private _dialog: MatDialog,
@@ -38,6 +40,12 @@ export class ListAuthorityComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -97,32 +105,37 @@ export class ListAuthorityComponent implements OnInit, AfterViewInit {
   }
 
   public findByName(name: string, page: number, size: number) {
-    this._authorityService.findByName(name, page, size).subscribe(data => {
-      if (data) {
-        this.authorities = data.content;
-        this.listData = new MatTableDataSource(this.authorities);
-        this.totalElements = data.totalElements;
-      }
-    });
-
+    this.subscriptions.push(
+      this._authorityService.findByName(name, page, size).subscribe(data => {
+        if (data) {
+          this.authorities = data.content;
+          this.listData = new MatTableDataSource(this.authorities);
+          this.totalElements = data.totalElements;
+        }
+      })
+    );
   }
 
   public onUpdate(row: AuthorityDTORequest, id: number) {
-    this._authorityService.update(row, id).subscribe((resp: any) => {
-      if (resp.status === 200) {
-        const idUser: number = resp.body?.id;
-        this.onFindById(idUser);
-      }
-    });
+    this.subscriptions.push(
+      this._authorityService.update(row, id).subscribe((resp: any) => {
+        if (resp.status === 200) {
+          const idUser: number = resp.body?.id;
+          this.onFindById(idUser);
+        }
+      })
+    );
   }
 
   public onSave(row: AuthorityDTORequest) {
-    this._authorityService.save(row).subscribe((resp: any) => {
-      if (resp.status === 200) {
-        const idUser: number = resp.body?.id;
-        this.onFindById(idUser);
-      }
-    });
+    this.subscriptions.push(
+      this._authorityService.save(row).subscribe((resp: any) => {
+        if (resp.status === 200) {
+          const idUser: number = resp.body?.id;
+          this.onFindById(idUser);
+        }
+      })
+    );
   }
 
   public clearAuthority(): AuthorityDTO[] {
@@ -130,22 +143,26 @@ export class ListAuthorityComponent implements OnInit, AfterViewInit {
   }
 
   public onFindById(id: number) {
-    this._authorityService.findById(id).subscribe(data => {
-      if (data) {
-        this.clearAuthority();
-        this.authorities.push(data);
-        this.listData = new MatTableDataSource(this.authorities);
-        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-      }
-    });
+    this.subscriptions.push(
+      this._authorityService.findById(id).subscribe(data => {
+        if (data) {
+          this.clearAuthority();
+          this.authorities.push(data);
+          this.listData = new MatTableDataSource(this.authorities);
+          this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+        }
+      })
+    );
   }
 
   public delete(id: number, name: string) {
-    this._authorityService.delete(id).subscribe((resp: any) => {
-      if (resp.status === 200) {
-        this.clear();
-      }
-    });
+    this.subscriptions.push(
+      this._authorityService.delete(id).subscribe((resp: any) => {
+        if (resp.status === 200) {
+          this.clear();
+        }
+      })
+    );
   }
 
 }

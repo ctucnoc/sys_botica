@@ -1,30 +1,47 @@
-<div class="container" *ngIf="dashboard">
-    <table>
-        <thead>
-            <th style="justify-content: center;">
+<div class="container">
+    <ng-container *ngIf="dashboard">
+        <div class="grid-6 with-100">
+            <div>
                 <app-item-quantity [quantityProduct]="dashboard.quantityProduct" [description]="vcTotalProduct">
                 </app-item-quantity>
-            </th>
-            <th>
+            </div>
+            <div>
                 <app-item-quantity [quantityProduct]="dashboard.quantityCategory" [description]="vcTotalCategory">
                 </app-item-quantity>
-            </th>
-            <th>
+            </div>
+            <div>
                 <app-item-quantity [quantityProduct]="dashboard.quantityMark" [description]="vcTotalMark">
                 </app-item-quantity>
-            </th>
-            <th>
+            </div>
+            <div>
                 <app-item-quantity [quantityProduct]="dashboard.quantityProvider" [description]="vcTotalProvider">
                 </app-item-quantity>
-            </th>
-            <th>
+            </div>
+            <div>
                 <app-item-quantity [quantityProduct]="dashboard.quantityUnit" [description]="vcTotalUnit">
                 </app-item-quantity>
-            </th>
-            <th>
+            </div>
+            <div>
                 <app-item-quantity [quantityProduct]="dashboard.quantityCustomer" [description]="vcCustomer">
                 </app-item-quantity>
-            </th>
-        </thead>
-    </table>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<div class="container">
+    <ng-container *ngIf="dashboard">
+        <div class="row with-100">
+            <div class="grid-2 with-100">
+                <div>
+                    <app-grafic-donut [data]="dashboard.lstDailySale" [title]="vcTitleDailySale">
+                    </app-grafic-donut>
+                </div>
+                <div>
+                    <app-grafic-donut [data]="dashboard.lstMonthSale" [title]="vcTitleMonthSale">
+                    </app-grafic-donut>
+                </div>
+            </div>
+        </div>
+    </ng-container>
 </div>

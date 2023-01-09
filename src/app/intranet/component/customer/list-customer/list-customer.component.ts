@@ -9,7 +9,7 @@ import { CustomerService } from 'src/app/shared/service/api/customer.service';
 import Swal from "sweetalert2";
 import { HttpErrorResponse } from '@angular/common/http';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { merge, of } from 'rxjs';
+import { merge, of, Subscription } from 'rxjs';
 import { switchMap, finalize, catchError } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddCustomerComponent } from '../add-customer/add-customer.component';
@@ -41,6 +41,8 @@ export class ListCustomerComponent implements OnInit {
   ];
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     protected _alertService: AlertService,
     protected _customerService: CustomerService,
@@ -52,6 +54,12 @@ export class ListCustomerComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -122,74 +130,82 @@ export class ListCustomerComponent implements OnInit {
 
   public onSave(dto: CustomerDTORequest) {
     this._alertService.loadingDialog('Registrando...');
-    this._customerService.save(dto)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          Swal.close();
-          error.status === 422 ? this.userExistDialog() : this.errorDialog();
-          return of({});
+    this.subscriptions.push(
+      this._customerService.save(dto)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            Swal.close();
+            error.status === 422 ? this.userExistDialog() : this.errorDialog();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            const idCustomer: number = resp.body?.id;
+            this._notificationService.success('Se registro correctamente', this._snackBar);
+            this.onFindById(idCustomer);
+            Swal.close();
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          const idCustomer: number = resp.body?.id;
-          this._notificationService.success('Se registro correctamente', this._snackBar);
-          this.onFindById(idCustomer);
-          Swal.close();
-        }
-      });
+    );
   }
 
   public onUpdate(dto: CustomerDTORequest, id: number) {
     this._alertService.loadingDialog('Actualizando...');
-    this._customerService.update(dto, id)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          Swal.close();
-          this.errorDialog();
-          return of({});
+    this.subscriptions.push(
+      this._customerService.update(dto, id)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            Swal.close();
+            this.errorDialog();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            Swal.close();
+            const idCustomer: number = resp.body?.id;
+            this._notificationService.success('Se actualizo correctamente', this._snackBar);
+            console.log('response -> {} ' + id);
+            this.onFindById(id);
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          Swal.close();
-          const idCustomer: number = resp.body?.id;
-          this._notificationService.success('Se actualizo correctamente', this._snackBar);
-          console.log('response -> {} ' + id);
-          this.onFindById(id);
-        }
-      });
+    );
   }
 
   public onDeleteCustomer(id: number) {
     this._alertService.loadingDialog('Eliminando...');
-    this._customerService.delete(id)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          Swal.close();
-          this.errorDialog();
-          return of({});
+    this.subscriptions.push(
+      this._customerService.delete(id)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            Swal.close();
+            this.errorDialog();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            this.onEraser();
+            this._notificationService.success('Se elimino correctamente', this._snackBar);
+            Swal.close();
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          this.onEraser();
-          this._notificationService.success('Se elimino correctamente', this._snackBar);
-          Swal.close();
-        }
-      });
+    );
   }
 
   public onFindById(id: number) {
-    this._customerService.findById(id).subscribe(
-      (data) => {
-        this.clearCustomers();
-        this.customers.push(data);
-        this.datasource = new MatTableDataSource(this.customers);
-      },
-      (error: HttpErrorResponse) => {
+    this.subscriptions.push(
+      this._customerService.findById(id).subscribe(
+        (data) => {
+          this.clearCustomers();
+          this.customers.push(data);
+          this.datasource = new MatTableDataSource(this.customers);
+        },
+        (error: HttpErrorResponse) => {
 
-      }
+        }
+      )
     );
   }
 
@@ -206,18 +222,20 @@ export class ListCustomerComponent implements OnInit {
 
   public onFindByKeyWord(keyWord: string, page: number, size: number) {
     this._alertService.loadingDialog('Buscando...');
-    this._customerService.findByKeyWord(keyWord, page, size)
-      .subscribe(
-        (data) => {
-          this.customers = data.content;
-          this.datasource = new MatTableDataSource(this.customers);
-          this.totalElements = data.totalElements;
-          Swal.close();
-        },
-        (error: HttpErrorResponse) => {
-          this.errorDialog();
-          Swal.close();
-        });
+    this.subscriptions.push(
+      this._customerService.findByKeyWord(keyWord, page, size)
+        .subscribe(
+          (data) => {
+            this.customers = data.content;
+            this.datasource = new MatTableDataSource(this.customers);
+            this.totalElements = data.totalElements;
+            Swal.close();
+          },
+          (error: HttpErrorResponse) => {
+            this.errorDialog();
+            Swal.close();
+          })
+    );
   }
 
   public userExistDialog(): void {

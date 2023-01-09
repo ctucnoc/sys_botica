@@ -1,0 +1,33 @@
+<mat-toolbar class="mat-toolbar-master">
+    <span>Galeria de Imagenes</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-button matSuffix mat-icon-button (click)="onClose()" tabIndex="-1">
+        <mat-icon svgIcon="cancel"></mat-icon>
+    </button>
+</mat-toolbar>
+<div class="mat-elevation-z8">
+    <div class="display-flex" style="padding: 5px;">
+        <div class="w-90">
+            <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*">
+        </div>
+        <div class="w-10" style="text-align: right;padding-right: 10px;">
+            <button [disabled]="!isEnableContinueButton" (click)="onUpload()">
+                <mat-icon svgIcon="upload"></mat-icon>
+            </button>
+        </div>
+    </div>
+    <ng-container *ngIf="productImgs">
+        <mat-list>
+            <div mat-subheader>Imagenes</div>
+            <mat-list-item *ngFor="let productImg of productImgs">
+                <img mat-line mat-list-avatar class="avatar-product" [src]="productImg.url">
+                <div matLine> {{productImg.name}} </div>
+                <div matLine> {{productImg.type}} </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </ng-container>
+    <ng-container *ngIf="!productImgs">
+        <div>no hay ninguna imagen</div>
+    </ng-container>
+</div>

@@ -14,7 +14,7 @@ import { AuthorityDTO } from 'src/app/shared/model/response/authorityDTO';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { SearchAuthorityComponent } from '../search-authority/search-authority.component';
 import { UserAuthorityDTORequest } from 'src/app/shared/model/request/userAuthorityDTORequest';
-import { of, merge } from 'rxjs';
+import { of, merge, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/service/aler.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -34,6 +34,8 @@ export class ListUserAuthorityComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public title!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _formBuilder: FormBuilder,
     private _userService: UserService,
@@ -47,6 +49,12 @@ export class ListUserAuthorityComponent implements OnInit, AfterViewInit {
     id: ['', [Validators.required]],
     username: ['', [Validators.required]],
   });
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
@@ -116,25 +124,29 @@ export class ListUserAuthorityComponent implements OnInit, AfterViewInit {
   }
 
   public onFindAutoCompleteFullName(key_word: string) {
-    this._userService.findByAutoCompleteFullName(key_word).subscribe(data => {
-      if (data) {
-        this.clearUser();
-        this.users.push(...data);
-      }
-    });
+    this.subscriptions.push(
+      this._userService.findByAutoCompleteFullName(key_word).subscribe(data => {
+        if (data) {
+          this.clearUser();
+          this.users.push(...data);
+        }
+      })
+    );
   }
   public clearUser(): UserDTO[] {
     return this.users = [];;
   }
 
   public onFindByIduser(id: any, page: number, size: number) {
-    this._userAuthorityService.findByIduser(id, page, size).subscribe(data => {
-      if (data) {
-        this.userAuthorities = data.content;
-        this.listData = new MatTableDataSource(this.userAuthorities);
-        this.totalElements = data.totalElements;
-      }
-    });
+    this.subscriptions.push(
+      this._userAuthorityService.findByIduser(id, page, size).subscribe(data => {
+        if (data) {
+          this.userAuthorities = data.content;
+          this.listData = new MatTableDataSource(this.userAuthorities);
+          this.totalElements = data.totalElements;
+        }
+      })
+    );
   }
 
   public onCreater() {
@@ -156,35 +168,39 @@ export class ListUserAuthorityComponent implements OnInit, AfterViewInit {
   }
 
   public onSave(row: UserAuthorityDTORequest) {
-    this._userAuthorityService.save(row)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          error.status === 422 ? this.personalityDialog('Alerta', 'Rol ya asinado al usuario') : this.errorDialog();
-          return of({});
+    this.subscriptions.push(
+      this._userAuthorityService.save(row)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            error.status === 422 ? this.personalityDialog('Alerta', 'Rol ya asinado al usuario') : this.errorDialog();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            this.onFindByIduser(row.idUser, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          this.onFindByIduser(row.idUser, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
-        }
-      });
+    );
   }
 
   public onRemove(row: UserAuthorityDTO) {
-    this._userAuthorityService.delete(row.id)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 404) {
-            this.personalityDialog('Alerta', 'Registro no encontrado')
+    this.subscriptions.push(
+      this._userAuthorityService.delete(row.id)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 404) {
+              this.personalityDialog('Alerta', 'Registro no encontrado')
+            }
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            this.onFindByIduser(row.user?.id, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
           }
-          return of({});
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          this.onFindByIduser(row.user?.id, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
-        }
-      });
+    );
   }
 
   public personalityDialog(title: string, subTitle: string): void {

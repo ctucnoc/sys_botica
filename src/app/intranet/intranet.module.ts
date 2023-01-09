@@ -64,7 +64,11 @@ import { WharehouseSubsidiaryComponent } from './modules/conf/wharehouse-subsidi
 import { ListWharehouseSubsidiaryComponent } from './component/config/list-wharehouse-subsidiary/list-wharehouse-subsidiary.component';
 import { SearchWharehouseComponent } from './component/config/search-wharehouse/search-wharehouse.component';
 import { ConfirmSaleComponent } from './component/sale/confirm-sale/confirm-sale.component';
-
+import { ListProductImgComponent } from './component/product/list-product-img/list-product-img.component';
+import { ChangePasswordFormComponent } from './component/user/change-password-form/change-password-form.component';
+import { ChangePasswordComponent } from './modules/user/change-password/change-password.component';
+import { ProductAllWharehouseComponent } from './component/report/product-all-wharehouse/product-all-wharehouse.component';
+import { ReportProductWharehouseComponent } from './modules/report/report-product-wharehouse/report-product-wharehouse.component';
 
 const COMPONENT = [
   IntranetLayoutComponent,
@@ -110,6 +114,9 @@ const COMPONENT = [
   OutSubWharehouseComponent,
   AddOutSubWarehouseComponent,
   DialogIncomeAmountComponent,
+  ListProductImgComponent,
+  ChangePasswordFormComponent,
+  ChangePasswordComponent,
 ];
 
 const COMPOMENTS_SALE = [
@@ -135,6 +142,8 @@ const COMPONENTS_DASHBOARD = [
 const COMPONENTS_REPORT = [
   ReportSaleDateComponent,
   ItemReportSaleDateComponent,
+  ProductAllWharehouseComponent,
+  ReportProductWharehouseComponent,
 ];
 
 const COMPONENTS_CONF = [

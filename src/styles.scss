@@ -497,3 +497,17 @@ table{
   color: white;
   border: none;
 }
+
+.grid-2{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-6{
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.with-100{
+  width: 100%;
+}

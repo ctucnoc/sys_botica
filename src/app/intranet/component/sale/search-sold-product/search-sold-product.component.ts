@@ -8,7 +8,7 @@ import { SaleParam } from 'src/app/shared/model/request/saleDTORequest';
 import { SaleDTO } from 'src/app/shared/model/response/saleDTO';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 import { ValidateService } from 'src/app/shared/service/validate.service';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap, debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ProofPaymentService } from 'src/app/shared/service/api/proofPayment.service';
@@ -24,6 +24,8 @@ import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DtSoldProductComponent } from '../dt-sold-product/dt-sold-product.component';
 import { saveAs } from 'file-saver';
 import { VaucherService } from 'src/app/shared/service/api/vaucher.service';
+import { ConfirmSaleComponent } from '../confirm-sale/confirm-sale.component';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -50,6 +52,9 @@ export class SearchSoldProductComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public frmSearch!: FormGroup;
   public proofPayments: ProofPaymentDTO[] = [];
+  public archivePpf_pixel!: SafeResourceUrl;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     protected _saleService: SaleService,
     protected _formBuilder: FormBuilder,
@@ -59,6 +64,7 @@ export class SearchSoldProductComponent implements OnInit, AfterViewInit {
     protected _dtSaleService: DtSaleService,
     protected _dialog: MatDialog,
     protected _vaucherService: VaucherService,
+    protected _sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +88,12 @@ export class SearchSoldProductComponent implements OnInit, AfterViewInit {
           this.customers = [];
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   public clearFrmSearch() {
@@ -116,28 +128,44 @@ export class SearchSoldProductComponent implements OnInit, AfterViewInit {
 
   public onFindBySale(idSale: number) {
     this._alertService.loadingDialog('Cargando...');
-    this._dtSaleService.findBySale(idSale).subscribe(
-      (data: any) => {
-        this.onDtSaleProduct(data);
-        Swal.close();
-      }
+    this.subscriptions.push(
+      this._dtSaleService.findBySale(idSale).subscribe(
+        (data: any) => {
+          this.onDtSaleProduct(data);
+          Swal.close();
+        }
+      )
     );
   }
 
   public onPrint(id: any) {
     this._alertService.loadingDialog('Descargando...');
-    this._vaucherService.findByRePrintVaucher(id).subscribe(
-      (data) => {
-        const filename = 'Vaucher' + '.pdf';
-        //saveAs(data, filename);
-        let thefile = new Blob([data]);
-        let url = window.URL.createObjectURL(thefile);
-        window.open(url);
-        Swal.close();
-      }, (error: HttpErrorResponse) => {
-        console.log(error.error);
-      }
+    this.subscriptions.push(
+      this._vaucherService.findByRePrintVaucher(id).subscribe(
+        (data) => {
+          let thefile = window.URL.createObjectURL(data);
+          this.archivePpf_pixel = this._sanitizer.bypassSecurityTrustResourceUrl(thefile);
+          Swal.close();
+          this.onConfirmSale(this.archivePpf_pixel);
+        }, (error: HttpErrorResponse) => {
+          console.log(error.error);
+        }
+      )
     );
+  }
+
+  public onConfirmSale(data: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "100%";
+    dialogConfig.height = "70%";
+    dialogConfig.panelClass = "custom-dialog";
+    dialogConfig.data = data;
+    const dialogRef = this._dialog.open(ConfirmSaleComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(rpta => {
+      this.clear();
+    });
   }
 
   onDtSaleProduct(data: DtSaleDTO[]) {
@@ -157,24 +185,28 @@ export class SearchSoldProductComponent implements OnInit, AfterViewInit {
 
   public onFindAllProofPayment() {
     this._alertService.loadingDialog('cargando...');
-    this._proofPaymentService.findAll().subscribe(
-      (data) => {
-        this.proofPayments = data;
-        Swal.close();
-      }, (error: HttpErrorResponse) => {
-        Swal.close();
-        if (error.status === 500) {
-          this.errorDialog();
+    this.subscriptions.push(
+      this._proofPaymentService.findAll().subscribe(
+        (data) => {
+          this.proofPayments = data;
+          Swal.close();
+        }, (error: HttpErrorResponse) => {
+          Swal.close();
+          if (error.status === 500) {
+            this.errorDialog();
+          }
         }
-      }
+      )
     );
   }
 
   public onFindByKeyWordCustomer(key_word: string) {
-    this._customerService.findByKeyWordSQL(key_word).subscribe(
-      (data: any) => {
-        this.customers = data;
-      }
+    this.subscriptions.push(
+      this._customerService.findByKeyWordSQL(key_word).subscribe(
+        (data: any) => {
+          this.customers = data;
+        }
+      )
     );
   }
 
@@ -249,13 +281,15 @@ export class SearchSoldProductComponent implements OnInit, AfterViewInit {
   }
 
   public onGetAllParameter(params: SaleParam, page: number, size: number) {
-    this._saleService.findByAllParameter(params, page, size).subscribe(
-      (data: any) => {
-        this.sales = data.content;
-        this.datasource = new MatTableDataSource(this.sales);
-        this.datasource.paginator = this.paginator;
-        this.totalElements = data.totalElements;
-      }
+    this.subscriptions.push(
+      this._saleService.findByAllParameter(params, page, size).subscribe(
+        (data: any) => {
+          this.sales = data.content;
+          this.datasource = new MatTableDataSource(this.sales);
+          this.datasource.paginator = this.paginator;
+          this.totalElements = data.totalElements;
+        }
+      )
     );
   }
 

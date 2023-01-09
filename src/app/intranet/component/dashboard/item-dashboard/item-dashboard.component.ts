@@ -1,12 +1,13 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashboardService } from 'src/app/shared/service/api/dashboard.service';
 import { DashboardDTO } from 'src/app/shared/model/response/dashboardDTO';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from 'src/app/shared/service/aler.service';
 import Swal from "sweetalert2";
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartType, ChartData, ChartEvent } from 'chart.js';
+import { ValidateService } from 'src/app/shared/service/validate.service';
+import { StorageService } from 'src/app/shared/service/storage.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-item-dashboard',
@@ -15,7 +16,6 @@ import { ChartConfiguration, ChartType, ChartData, ChartEvent } from 'chart.js';
 })
 export class ItemDashboardComponent implements OnInit, AfterViewInit {
 
-  public barChartType: ChartType = 'bar';
   public dashboard!: DashboardDTO;
   public vcTotalProduct!: string;
   public vcTotalMark!: string;
@@ -23,11 +23,20 @@ export class ItemDashboardComponent implements OnInit, AfterViewInit {
   public vcTotalUnit!: string;
   public vcTotalCategory!: string;
   public vcCustomer!: String;
+  public nrIdSubsidiary!: number;
 
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  public vcTitleDailySale!: any;
+  public vcTitleMonthSale!: any;
+
+  public lstDailySale!: any;
+  public lstMonthSale!: any;
+
+  protected subscriptions: Array<Subscription> = new Array();
+
   constructor(
     protected _dashboardService: DashboardService,
     protected _alertService: AlertService,
+    protected _storageService: StorageService
   ) { }
 
   ngOnInit(): void {
@@ -37,73 +46,37 @@ export class ItemDashboardComponent implements OnInit, AfterViewInit {
     this.vcTotalUnit = SysBoticaConstant.MSG_TOTAL_UNIT.toUpperCase();
     this.vcTotalCategory = SysBoticaConstant.MSG_TOTAL_CATEGORY.toUpperCase();
     this.vcCustomer = SysBoticaConstant.MSG_TOTAL_CUSTOMER.toUpperCase();
+    this.vcTitleDailySale = SysBoticaConstant.TITLE_REPORT_SELE_DAY;
+    this.vcTitleMonthSale = SysBoticaConstant.TITLE_REPORT_SELE_MONTH;
+
+    //this.nrIdSubsidiary = this._storageService.getLocalStorage();
+    this.onFindByQuantity();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
-    this.onFindByQuantity();
   }
 
   public onFindByQuantity() {
     this._alertService.loadingDialog('Cargando...');
-    this._dashboardService.findByQuantity()
-      .subscribe(
-        (data: any) => {
-          this.dashboard = data;
-          console.log(this.dashboard);
-          Swal.close();
-        }, (error: HttpErrorResponse) => {
+    this.subscriptions.push(
+      this._dashboardService.findByQuantity(ValidateService.dateToday(), 1)
+        .subscribe(
+          (data: any) => {
+            this.dashboard = data;
+            this.lstDailySale = this.dashboard.lstDailySale;
+            this.lstMonthSale = this.dashboard.lstMonthSale;
+            Swal.close();
+          }, (error: HttpErrorResponse) => {
 
-        }
-      );
+          }
+        )
+    );
   }
-
-  public barChartOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    // We use these empty structures as placeholders for dynamic theming.
-    scales: {
-      x: {},
-      y: {
-        min: 10
-      }
-    },
-    plugins: {
-      legend: {
-        display: true,
-      },
-    }
-  };
-
-
-  public barChartData: ChartData<'bar'> = {
-    labels: ['2006', '2007', '2008', '2009', '2010', '2011', '2012'],
-    datasets: [
-      { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-      { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-    ]
-  };
-
-  // events
-  public chartClicked({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
-  }
-
-  public chartHovered({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
-  }
-
-  public randomize(): void {
-    // Only Change 3 values
-    this.barChartData.datasets[0].data = [
-      Math.round(Math.random() * 100),
-      59,
-      80,
-      Math.round(Math.random() * 100),
-      56,
-      Math.round(Math.random() * 100),
-      40];
-
-    this.chart?.update();
-  }
-
 
 }

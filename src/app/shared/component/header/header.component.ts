@@ -1,9 +1,11 @@
-import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { settings } from 'src/environments/settings';
 import { StorageService } from '../../service/storage.service';
 import { SysBoticaConstant } from '../../constants/sysBoticaConstant';
 import { ValidateService } from '../../service/validate.service';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { AboutComponent } from '../about/about.component';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +20,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(
     protected router: Router,
     protected _storageServive: StorageService,
+    protected cdRef: ChangeDetectorRef,
+    protected _dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -27,6 +31,22 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const user = this._storageServive.getLocalStorage(SysBoticaConstant.STORAGE_USER_NAME);
     this.userName = user != null ? ValidateService.firstLetterUpperCase(JSON.parse(user)) : user;
+    this.cdRef.detectChanges();
+  }
+
+  public goToAbout() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "60%";
+    dialogConfig.panelClass = "custom-dialog";
+    const dialogRef = this._dialog.open(AboutComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(rpta => {
+    });
+  }
+
+  changePassword(): void {
+    this.router.navigate(['intranet/change-password']);
   }
 
   goToPage(): void {
@@ -101,8 +121,16 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.router.navigate(['intranet/report-sale-date']);
   }
 
-  goToWharehouseSubsidiary(){
+  goToWharehouseSubsidiary() {
     this.router.navigate(['intranet/wharehouse-subsidiary']);
+  }
+
+  goToHome(){
+    this.router.navigate(['intranet/dashboard']);
+  }
+
+  goToProductAllWharehouse(){
+    this.router.navigate(['intranet/product-wharehouse']);
   }
 
 }

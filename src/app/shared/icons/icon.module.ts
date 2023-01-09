@@ -40,6 +40,9 @@ export class IconModule {
         this._matIconRegister.addSvgIcon('download', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/download.svg'));
         this._matIconRegister.addSvgIcon('search_solid', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/search_solid.svg'));
         this._matIconRegister.addSvgIcon('print', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/print.svg'));
-
+        this._matIconRegister.addSvgIcon('image', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/image.svg'));
+        this._matIconRegister.addSvgIcon('upload', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/upload.svg'));
+        this._matIconRegister.addSvgIcon('update_password', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/update_password.svg'));
+        this._matIconRegister.addSvgIcon('update', this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/menu/update.svg'));
     }
 }

@@ -14,7 +14,7 @@ import { AlertService } from 'src/app/shared/service/aler.service';
 import Swal from "sweetalert2";
 import { NotificationService } from 'src/app/shared/service/notification.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { of, forkJoin } from 'rxjs';
+import { of, forkJoin, Subscription } from 'rxjs';
 import { ProofPaymentService } from 'src/app/shared/service/api/proofPayment.service';
 import { ProofPaymentDTO } from 'src/app/shared/model/response/proofPaymentDTO';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
@@ -30,6 +30,7 @@ import { CategoryService } from 'src/app/shared/service/api/category.service';
 import { CategoryDTO } from 'src/app/shared/model/response/categoryDTO';
 import { ConfirmSaleComponent } from '../confirm-sale/confirm-sale.component';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+import { StorageService } from 'src/app/shared/service/storage.service';
 
 
 @Component({
@@ -61,6 +62,8 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public archivePpf_pixel!: SafeResourceUrl;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     protected _dtTransferService: DtTransferService,
     protected _formBuilder: FormBuilder,
@@ -74,6 +77,7 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
     protected _typeDocumentService: TypeDocumentService,
     protected _categoryService: CategoryService,
     protected _sanitizer: DomSanitizer,
+    protected _storageService: StorageService,
   ) { }
 
   ngOnInit(): void {
@@ -93,15 +97,23 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
       idProofPayment: [{ value: SysBoticaConstant.RESOURCE_DEFAULT_PROOF_PAYMENT, disabled: false }, [Validators.required]]
     });
 
+    const idSubsidiary: any = this._storageService.getLocalStorage(SysBoticaConstant.STORAGE_ID_SUBSIDIARY);
+
     this.frmAutoComplete.controls['nameProduct'].valueChanges
       .pipe(debounceTime(400))
       .subscribe(response => {
         if (response && response.length) {
-          this.onFindByKeyWord(1, response);
+          this.onFindByKeyWord(idSubsidiary, response);
         } else {
           this.clearProduct();
         }
       })
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   public onDissabledSale(): boolean {
@@ -181,40 +193,44 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
 
   public onFindAllProofPayment() {
     this._alertService.loadingDialog('cargando...');
-    this._proofPaymentService.findAll().subscribe(
-      (data) => {
-        this.proofPayments = data;
-        Swal.close();
-      }, (error: HttpErrorResponse) => {
-        Swal.close();
-        if (error.status === 500) {
-          this.errorDialog();
+    this.subscriptions.push(
+      this._proofPaymentService.findAll().subscribe(
+        (data) => {
+          this.proofPayments = data;
+          Swal.close();
+        }, (error: HttpErrorResponse) => {
+          Swal.close();
+          if (error.status === 500) {
+            this.errorDialog();
+          }
         }
-      }
+      )
     );
   }
 
   public onSaveSale(dto: SaleDTORequest) {
     this._alertService.questionDialog('¿Seguro que quiere registrar una venta?', '', true, true, 'Aceptar', 'Cancelar', 'assets/icons/menu/banner_sesifarma.svg').then(() => {
       this._alertService.loadingDialog(SysBoticaConstant.MESSAGE_LOADING_REGISTER);
-      this._saleService.save(dto)
-        .subscribe(
-          (data) => {
-            let thefile = window.URL.createObjectURL(data);
-            this.archivePpf_pixel = this._sanitizer.bypassSecurityTrustResourceUrl(thefile);
-            Swal.close();
-            this.onConfirmSale(this.archivePpf_pixel);
-          },
-          (error: HttpErrorResponse) => {
-            Swal.close();
-            if (error.status === 500) {
-              this.errorDialog();
-            } else if (error.status === 404) {
-              this._alertService.questionDialog('Error del Cliente', 'Ya existe un usuario con ese identificador', true, false, 'Entendido', '', 'assets/icons/alert-frame.svg').then(() => {
-              });
+      this.subscriptions.push(
+        this._saleService.save(dto)
+          .subscribe(
+            (data) => {
+              let thefile = window.URL.createObjectURL(data);
+              this.archivePpf_pixel = this._sanitizer.bypassSecurityTrustResourceUrl(thefile);
+              Swal.close();
+              this.onConfirmSale(this.archivePpf_pixel);
+            },
+            (error: HttpErrorResponse) => {
+              Swal.close();
+              if (error.status === 500) {
+                this.errorDialog();
+              } else if (error.status === 404) {
+                this._alertService.questionDialog('Error del Cliente', 'Ya existe un usuario con ese identificador', true, false, 'Entendido', '', 'assets/icons/alert-frame.svg').then(() => {
+                });
+              }
             }
-          }
-        );
+          )
+      );
     }, () => {
     });
   }
@@ -227,17 +243,19 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
 
   public onFindByCustomer(nro_document: string) {
     this._alertService.loadingDialog('Bucando...');
-    this._customerService.findByNroDocument(nro_document)
-      .subscribe(
-        (data) => {
-          this.customer = data;
-          this.onSetFrCustomer(this.customer);
-          Swal.close();
-        }, (error: HttpErrorResponse) => {
-          Swal.close();
-          error.status === 404 ? this.notFound() : this.errorDialog();
-        }
-      );
+    this.subscriptions.push(
+      this._customerService.findByNroDocument(nro_document)
+        .subscribe(
+          (data) => {
+            this.customer = data;
+            this.onSetFrCustomer(this.customer);
+            Swal.close();
+          }, (error: HttpErrorResponse) => {
+            Swal.close();
+            error.status === 404 ? this.notFound() : this.errorDialog();
+          }
+        )
+    );
   }
 
   public TotalPaymentOrde() {
@@ -273,31 +291,35 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
 
   public onDataInit() {
     this._alertService.loadingDialog('cargando...');
-    forkJoin({
-      typeDocuments: this._typeDocumentService.findById(),
-      proofPayments: this._proofPaymentService.findAll(),
-      categories: this._categoryService.findAll(),
-    }).subscribe(
-      (data: any) => {
-        Swal.close();
-        this.typeDocuments = data.typeDocuments;
-        this.proofPayments = data.proofPayments;
-        this.categories = data.categories;
-        console.log(this.categories);
-      },
-      (error: HttpErrorResponse) => {
-        Swal.close();
-        console.log('error -> {} ' + error.error);
-      }
+    this.subscriptions.push(
+      forkJoin({
+        typeDocuments: this._typeDocumentService.findById(),
+        proofPayments: this._proofPaymentService.findAll(),
+        categories: this._categoryService.findAll(),
+      }).subscribe(
+        (data: any) => {
+          Swal.close();
+          this.typeDocuments = data.typeDocuments;
+          this.proofPayments = data.proofPayments;
+          this.categories = data.categories;
+          console.log(this.categories);
+        },
+        (error: HttpErrorResponse) => {
+          Swal.close();
+          console.log('error -> {} ' + error.error);
+        }
+      )
     );
   }
 
   public onTypeDocuments() {
-    this._typeDocumentService.findById().subscribe(
-      (data) => {
-        this.typeDocuments = data;
-      },
-      (error: HttpErrorResponse) => { }
+    this.subscriptions.push(
+      this._typeDocumentService.findById().subscribe(
+        (data) => {
+          this.typeDocuments = data;
+        },
+        (error: HttpErrorResponse) => { }
+      )
     );
   }
 
@@ -339,15 +361,17 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
   }
 
   public onFindByKeyWord(idsubsidiary: number, keyWord: string) {
-    this._dtTransferService.findByWordKey(idsubsidiary, keyWord)
-      .subscribe(
-        (data) => {
-          this.productSales = data;
-        },
-        (error: HttpErrorResponse) => {
-          console.error(error.error);
-        }
-      );
+    this.subscriptions.push(
+      this._dtTransferService.findByWordKey(idsubsidiary, keyWord)
+        .subscribe(
+          (data) => {
+            this.productSales = data;
+          },
+          (error: HttpErrorResponse) => {
+            console.error(error.error);
+          }
+        )
+    );
   }
 
   public onCreaterCustomer(row?: CustomerDTO) {
@@ -368,22 +392,24 @@ export class MakeSaleComponent implements OnInit, AfterViewInit {
 
   public onSave(dto: CustomerDTORequest) {
     this._alertService.loadingDialog('Registrando...');
-    this._customerService.save(dto)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          Swal.close();
-          error.status === 422 ? this.userExistDialog() : this.errorDialog();
-          return of({});
+    this.subscriptions.push(
+      this._customerService.save(dto)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            Swal.close();
+            error.status === 422 ? this.userExistDialog() : this.errorDialog();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            const numberDocument: any = dto.numberDocument;
+            this._notificationService.success('Se registro correctamente', this._snackBar);
+            this.onFindByCustomer(numberDocument);
+            Swal.close();
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          const numberDocument: any = dto.numberDocument;
-          this._notificationService.success('Se registro correctamente', this._snackBar);
-          this.onFindByCustomer(numberDocument);
-          Swal.close();
-        }
-      });
+    );
   }
 
   public userExistDialog(): void {

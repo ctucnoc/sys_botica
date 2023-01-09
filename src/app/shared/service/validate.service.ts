@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,23 @@ export abstract class ValidateService {
 
     public static firstLetterUpperCase(word: string) {
         return word.toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase());
+    }
+
+    public static validateRepeatPassword(control: AbstractControl): any {
+        const formGroup = control.parent;
+        if (formGroup) {
+            const passwordControl = formGroup.get('newPassword'); // to get value in input tag
+            const confirmPasswordControl = formGroup.get('confirmNewPassword');
+            if (passwordControl && confirmPasswordControl) {
+                const password = passwordControl.value;
+                const confirmPassword = confirmPasswordControl.value;
+                if (password !== confirmPassword) {
+                    return { matchPassword: true };
+                } else {
+                    return null;
+                }
+            }
+        }
     }
 
     public static validaSoloLetras(name: string): any {

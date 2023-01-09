@@ -1,4 +1,6 @@
 import { VSaleDateDTO } from './vSaleDateDTO';
+import { DailySaleDTO } from './dailySaleDTO';
+import { MonthSaleDTO } from './monthSaleDTO';
 
 export interface DashboardDTO{
     quantityProduct?:number;
@@ -8,4 +10,6 @@ export interface DashboardDTO{
     quantityUnit?:number;
     quantityCustomer?:number;
     lstSaleDate:VSaleDateDTO[];
+    lstDailySale:DailySaleDTO[];
+    lstMonthSale:MonthSaleDTO[];
 }

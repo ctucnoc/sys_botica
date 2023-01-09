@@ -35,6 +35,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
 import { FirstLetterUpperCasePipe } from './pipe/firstLetterUpperCase.pipe';
 import { MatListModule } from '@angular/material/list';
+import { AboutComponent } from './component/about/about.component';
+import { GraficDonutComponent } from './component/grafic-donut/grafic-donut.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 
 const MATERIAL_MODULE = [
@@ -77,7 +80,9 @@ const COMPONENTS = [
   AvatarComponent,
   DialogConfirmationComponent,
   LoaderSpinnerComponent,
-  DialogQuestionComponent
+  DialogQuestionComponent,
+  GraficDonutComponent,
+  AboutComponent,
 ];
 
 @NgModule({
@@ -89,6 +94,7 @@ const COMPONENTS = [
     CommonModule,
     ...MATERIAL_MODULE,
     ...UTIL_MODULE,
+    HighchartsChartModule,
     IconModule,
   ],
   exports: [

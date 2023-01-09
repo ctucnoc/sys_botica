@@ -3,9 +3,9 @@
         <button mat-icon-button>
             <mat-icon class="material-icons color_black " svgIcon="menu"></mat-icon>
         </button>
-        <a class="social-icon-ref">
-            <img style="margin-bottom: -20px;cursor: pointer;" src="./../../../../assets/icons/menu/logo.svg"
-                width="150" height="150">
+        <a class="social-icon-ref" href="javascript:void(0)" (click)="goToHome()">
+            <img style="margin-bottom: -15px;cursor: pointer;" src="./../../../../assets/icons/menu/logo.svg"
+                width="40" height="40">
         </a>
         <div style="padding-left: 30px;padding-right: 30px;width: 100%;">
             <li class="lista-menu">
@@ -115,6 +115,10 @@
                             <mat-icon svgIcon="computer"></mat-icon>
                             <span>Reporte Venta por Fecha</span>
                         </button>
+                        <button mat-menu-item (click)="goToProductAllWharehouse()">
+                            <mat-icon svgIcon="computer"></mat-icon>
+                            <span>Reporte Productos por Almacén</span>
+                        </button>
                     </mat-menu>
                 </a>
             </li>
@@ -133,7 +137,11 @@
                                 <span style="margin-top: 5px;padding-left: 5px;font-weight: 600;">{{userName}}</span>
                             </div>
                             <mat-divider></mat-divider>
-                            <button mat-menu-item (click)="singOut()">
+                            <button mat-menu-item (click)="changePassword()">
+                                <mat-icon svgIcon="update_password"></mat-icon>
+                                <span>Cambiar Contraseña</span>
+                            </button>
+                            <button mat-menu-item (click)="goToAbout()">
                                 <mat-icon svgIcon="info"></mat-icon>
                                 <span>Acerca de Sesy Farma</span>
                             </button>

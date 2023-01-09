@@ -11,7 +11,7 @@ import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 import { ProviderDTORequest } from 'src/app/shared/model/request/providerDTORequest';
 import { catchError, switchMap, finalize } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of, merge } from 'rxjs';
+import { of, merge, Subscription } from 'rxjs';
 import { AddProviderComponent } from '../add-provider/add-provider.component';
 import Swal from "sweetalert2";
 
@@ -32,6 +32,8 @@ export class ListProviderComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
   public title!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialog: MatDialog,
     private _providerService: ProviderService,
@@ -40,6 +42,12 @@ export class ListProviderComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -106,22 +114,26 @@ export class ListProviderComponent implements OnInit {
 
   public onFindByDescription(key_Word: string, page: number, size: number) {
     this._alertService.loadingDialog('Proveedores Cargando...');
-    this._providerService.findByName(key_Word, page, size)
-      .pipe(finalize(() => Swal.close()))
-      .subscribe(data => {
-        this.providers = data.content;
-        this.listData = new MatTableDataSource(this.providers);
-        this.totalElements = data.totalElements;
-      });
+    this.subscriptions.push(
+      this._providerService.findByName(key_Word, page, size)
+        .pipe(finalize(() => Swal.close()))
+        .subscribe(data => {
+          this.providers = data.content;
+          this.listData = new MatTableDataSource(this.providers);
+          this.totalElements = data.totalElements;
+        })
+    );
   }
 
   public onFindById(id: number) {
-    this._providerService.findById(id).subscribe(data => {
-      this.clearPrividers();
-      this.providers.push(data);
-      this.listData = new MatTableDataSource(this.providers);
-      this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-    });
+    this.subscriptions.push(
+      this._providerService.findById(id).subscribe(data => {
+        this.clearPrividers();
+        this.providers.push(data);
+        this.listData = new MatTableDataSource(this.providers);
+        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+      })
+    );
   }
 
   public clearPrividers(): ProviderDTO[] {
@@ -130,22 +142,24 @@ export class ListProviderComponent implements OnInit {
 
   public onUpdate(row: ProviderDTORequest, id: number) {
     this._alertService.loadingDialog('Proveedor Actualizando...');
-    this._providerService.update(row, id)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          Swal.close();
-          if (error.status === 400) {
-            this.errorDialog();
+    this.subscriptions.push(
+      this._providerService.update(row, id)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            Swal.close();
+            if (error.status === 400) {
+              this.errorDialog();
+            }
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            Swal.close();
+            this.onFindById(id);
           }
-          return of({});
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          Swal.close();
-          this.onFindById(id);
-        }
-      });
+    );
   }
 
   public errorDialog(): void {
@@ -156,31 +170,35 @@ export class ListProviderComponent implements OnInit {
 
   public onSave(row: ProviderDTORequest) {
     this._alertService.loadingDialog('Proveedor Registrando...');
-    this._providerService.save(row)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          Swal.close();
-          return of({});
+    this.subscriptions.push(
+      this._providerService.save(row)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            Swal.close();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            Swal.close();
+            const idUser: number = resp.body?.id;
+            this.onFindById(idUser);
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          Swal.close();
-          const idUser: number = resp.body?.id;
-          this.onFindById(idUser);
-        }
-      });
+    );
   }
 
   public onRemove(id: number) {
     this._alertService.loadingDialog('Eliminando...');
-    this._providerService.delete(id)
-      .pipe(finalize(() => Swal.close()))
-      .subscribe(
-        (data) => {
-          this.onFindByDescription(SysBoticaConstant.VC_EMPTY, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
-        }
-      );
+    this.subscriptions.push(
+      this._providerService.delete(id)
+        .pipe(finalize(() => Swal.close()))
+        .subscribe(
+          (data) => {
+            this.onFindByDescription(SysBoticaConstant.VC_EMPTY, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
+          }
+        )
+    );
   }
 
 }

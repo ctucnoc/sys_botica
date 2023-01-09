@@ -10,7 +10,7 @@ import { UserService } from 'src/app/shared/service/api/user.service';
 import { AlertService } from 'src/app/shared/service/aler.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of, merge } from 'rxjs';
+import { of, merge, Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/shared/service/notification.service';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 import { settings } from 'src/environments/settings';
@@ -31,6 +31,8 @@ export class ListUserComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialog: MatDialog,
     private _userService: UserService,
@@ -39,6 +41,12 @@ export class ListUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -109,37 +117,41 @@ export class ListUserComponent implements OnInit {
   }
 
   public onSave(user: UserDTORequest) {
-    this._userService.save(user)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          error.status === 422 ? this.userExistDialog() : this.errorDialog();
-          return of({});
+    this.subscriptions.push(
+      this._userService.save(user)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            error.status === 422 ? this.userExistDialog() : this.errorDialog();
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            const idUser: number = resp.body?.id;
+            this.onFindById(idUser);
+          }
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          const idUser: number = resp.body?.id;
-          this.onFindById(idUser);
-        }
-      });
+    );
   }
 
   public onUpdate(user: UserDTORequest, id: number) {
-    this._userService.update(user, id)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 400) {
-            this.errorDialog();
+    this.subscriptions.push(
+      this._userService.update(user, id)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 400) {
+              this.errorDialog();
+            }
+            return of({});
+          })
+        )
+        .subscribe((resp: any) => {
+          if (resp.status === 200) {
+            const idUser: number = resp.body?.id;
+            this.onFindById(idUser);
           }
-          return of({});
         })
-      )
-      .subscribe((resp: any) => {
-        if (resp.status === 200) {
-          const idUser: number = resp.body?.id;
-          this.onFindById(idUser);
-        }
-      });
+    );
   }
 
   public userExistDialog(): void {
@@ -155,19 +167,23 @@ export class ListUserComponent implements OnInit {
 
   public onFindById(id: number) {
     this.clearUser();
-    this._userService.findById(id).subscribe(data => {
-      this.users.push(data);
-      this.listData = new MatTableDataSource(this.users);
-      this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-    });
+    this.subscriptions.push(
+      this._userService.findById(id).subscribe(data => {
+        this.users.push(data);
+        this.listData = new MatTableDataSource(this.users);
+        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+      })
+    );
   }
 
   public onFindByFullNameAndUserName(key_word: string, page: number, size: number) {
-    this._userService.findByFullNameAndUsername(key_word, page, size).subscribe(data => {
-      this.users = data.content;
-      this.listData = new MatTableDataSource(this.users);
-      this.totalElements = data.totalElements;
-    });
+    this.subscriptions.push(
+      this._userService.findByFullNameAndUsername(key_word, page, size).subscribe(data => {
+        this.users = data.content;
+        this.listData = new MatTableDataSource(this.users);
+        this.totalElements = data.totalElements;
+      })
+    );
   }
 
 }

@@ -7,8 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { SubsidiaryService } from 'src/app/shared/service/api/subsidiary.service';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { UserSubsidiaryDTORequest } from 'src/app/shared/model/request/userSubsidiaryDTORequest';
-import { UserSubsidiaryService } from 'src/app/shared/service/api/userSubsidiary.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-subsidiary',
@@ -17,7 +16,7 @@ import { UserSubsidiaryService } from 'src/app/shared/service/api/userSubsidiary
 })
 export class SearchSubsidiaryComponent implements OnInit {
 
-  public blFlag:boolean = false;
+  public blFlag: boolean = false;
   public totalElements!: number;
   public subsidiaries: Subsidiary[] = [];
   public listData!: MatTableDataSource<any>;
@@ -25,6 +24,8 @@ export class SearchSubsidiaryComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialoRef: MatDialogRef<SearchSubsidiaryComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UserDTO,
@@ -33,6 +34,12 @@ export class SearchSubsidiaryComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.data.id);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   public selectRow(row: Subsidiary) {
@@ -56,13 +63,15 @@ export class SearchSubsidiaryComponent implements OnInit {
   }
 
   public onFindName(name: string) {
-    this._subsidiaryService.findByName(name, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL_SEARCH).subscribe(data => {
-      if (data) {
-        this.subsidiaries = data.content;
-        this.listData = new MatTableDataSource(this.subsidiaries);
-        this.totalElements = data.totalElements;
-      }
-    });
+    this.subscriptions.push(
+      this._subsidiaryService.findByName(name, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL_SEARCH).subscribe(data => {
+        if (data) {
+          this.subsidiaries = data.content;
+          this.listData = new MatTableDataSource(this.subsidiaries);
+          this.totalElements = data.totalElements;
+        }
+      })
+    );
   }
 
 }

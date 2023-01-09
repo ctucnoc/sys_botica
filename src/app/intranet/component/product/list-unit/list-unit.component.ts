@@ -7,10 +7,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AddUnitComponent } from '../add-unit/add-unit.component';
 import { UnitDTO } from 'src/app/shared/model/response/unitDTO';
 import { DialogConfirmationComponent } from 'src/app/shared/component/dialog-confirmation/dialog-confirmation.component';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 import { settings } from 'src/environments/settings';
+import Swal from "sweetalert2";
+import { AlertService } from 'src/app/shared/service/aler.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-list-unit',
@@ -27,13 +30,22 @@ export class ListUnitComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialog: MatDialog,
-    private _unitService: UnitService
+    private _unitService: UnitService,
+    private _alertService: AlertService,
   ) { }
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit() {
@@ -103,38 +115,86 @@ export class ListUnitComponent implements OnInit, AfterViewInit {
   }
 
   public onSave(row: any) {
-    this._unitService.save(row).subscribe(response => {
-      this.findById(response.id);
-    });
+    this._alertService.loadingDialog('Registrando...');
+    this.subscriptions.push(
+      this._unitService.save(row).subscribe(
+        (response) => {
+          this.findById(response.id);
+          Swal.close();
+        },
+        (error: HttpErrorResponse) => {
+          Swal.close();
+          if (error.status === 400) {
+            this.errorDialogExistUnit();
+          }
+        })
+    );
   }
 
   public onUpdate(row: any, id: number) {
-    this._unitService.update(row, id).subscribe(response => {
-      this.findById(response.id);
-    });
+    this._alertService.loadingDialog('Actualizando...');
+    this.subscriptions.push(
+      this._unitService.update(row, id).subscribe(
+        (response) => {
+          this.findById(response.id);
+          Swal.close();
+        },
+        (error: HttpErrorResponse) => {
+          Swal.close();
+          if (error.status === 400) {
+            this.errorDialogExistUnit();
+          }
+        })
+    );
   }
 
   public onDeleteById(id: number) {
-    this._unitService.delete(id).subscribe(response => {
-      this.findById(response.id);
-    });
+    this.subscriptions.push(
+      this._unitService.delete(id).subscribe(
+        response => {
+          this.findById(response.id);
+        })
+    );
   }
 
   public findByDescription(key_word: any, page: number, size: number) {
-    this._unitService.findAll(key_word, page, size).subscribe(data => {
-      this.units = data.content;
-      this.listData = new MatTableDataSource(this.units);
-      this.totalElements = data.totalElements;
-    });
+    this._alertService.loadingDialog('Buscando...');
+    this.subscriptions.push(
+      this._unitService.findAll(key_word, page, size).subscribe(
+        (data) => {
+          this.units = data.content;
+          this.listData = new MatTableDataSource(this.units);
+          this.totalElements = data.totalElements;
+          Swal.close();
+        },
+        (error: HttpErrorResponse) => {
+          this.errorDialog();
+          Swal.close();
+        })
+    );
   }
 
+  public errorDialogExistUnit(): void {
+    this._alertService.questionDialog('los valores ingresados ya existen', '',
+      true, false, 'Entendido', '', 'assets/icons/alert-frame.svg').then(() => {
+      });
+  }
+
+
+  public errorDialog(): void {
+    this._alertService.questionDialog('Ha ocurrido un error. Por favor inténtalo nuevamente', '',
+      true, false, 'Entendido', '', 'assets/icons/alert-frame.svg').then(() => {
+      });
+  }
   public findById(id: number) {
-    this._unitService.findById(id).subscribe(data => {
-      this.clearUnits();
-      this.units.push(data);
-      this.listData = new MatTableDataSource(this.units);
-      this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-    });
+    this.subscriptions.push(
+      this._unitService.findById(id).subscribe(data => {
+        this.clearUnits();
+        this.units.push(data);
+        this.listData = new MatTableDataSource(this.units);
+        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+      })
+    );
   }
 
   public clearUnits() {

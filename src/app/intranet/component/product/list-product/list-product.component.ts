@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { ProductDTO } from 'src/app/shared/model/response/productDTO';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -11,20 +11,21 @@ import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 import { ProductDTORequest } from 'src/app/shared/model/request/productDTORequest';
 import { AlertService } from 'src/app/shared/service/aler.service';
 import Swal from "sweetalert2";
-import { finalize, catchError, switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of, merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { settings } from 'src/environments/settings';
 import { LoadingService } from 'src/app/shared/service/loading.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService } from 'src/app/shared/service/notification.service';
+import { ListProductImgComponent } from '../list-product-img/list-product-img.component';
 
 @Component({
   selector: 'app-list-product',
   templateUrl: './list-product.component.html',
-  styleUrls: ['./list-product.component.scss']
+  styleUrls: ['./list-product.component.scss'],
 })
-export class ListProductComponent implements OnInit, AfterViewInit {
+export class ListProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public title!: string;
   public products: ProductDTO[] = [];
@@ -43,6 +44,8 @@ export class ListProductComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialog: MatDialog,
     private _productService: ProductService,
@@ -54,6 +57,12 @@ export class ListProductComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -103,6 +112,19 @@ export class ListProductComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onProductImg(row?: ProductDTO) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "50%";
+    dialogConfig.panelClass = "custom-dialog";
+    dialogConfig.data = row?.id;
+    const dialogRef = this._dialog.open(ListProductImgComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(rpta => {
+      console.log('hola sistemas unsch');
+    });
+  }
+
   onDelete(row: any) {
     this._dialog
       .open(DialogConfirmationComponent, {
@@ -128,42 +150,48 @@ export class ListProductComponent implements OnInit, AfterViewInit {
 
   public onSave(row: any) {
     this._alertService.loadingDialog('Registrando...');
-    this._productService.save(row)
-      .pipe(finalize(() => Swal.close()))
-      .subscribe(
-        (data: any) => {
-          this.onFindById(data.id);
-          this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_ADD,this._snackBar);
-        },
-        (error: HttpErrorResponse) => {
-          error.status === 422 ? this.productExistDialog() : this.errorDialog();
-        }
-      );
+    this.subscriptions.push(
+      this._productService.save(row)
+        .pipe(finalize(() => Swal.close()))
+        .subscribe(
+          (data: any) => {
+            this.onFindById(data.id);
+            this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_ADD, this._snackBar);
+          },
+          (error: HttpErrorResponse) => {
+            error.status === 422 ? this.productExistDialog() : this.errorDialog();
+          }
+        )
+    );
   }
 
   public onFindByKeyWord(keyWord: string, page: number, size: number) {
     this._alertService.loadingDialog('Buscando...');
-    this._productService.findByKeyWord(keyWord, page, size)
-      .subscribe(
-        (data) => {
-          this.products = data.content;
-          this.listData = new MatTableDataSource(this.products);
-          this.totalElements = data.totalElements;
-          Swal.close();
-        },
-        (error: HttpErrorResponse) => {
-          this.errorDialog();
-          Swal.close();
-        });
+    this.subscriptions.push(
+      this._productService.findByKeyWord(keyWord, page, size)
+        .subscribe(
+          (data) => {
+            this.products = data.content;
+            this.listData = new MatTableDataSource(this.products);
+            this.totalElements = data.totalElements;
+            Swal.close();
+          },
+          (error: HttpErrorResponse) => {
+            this.errorDialog();
+            Swal.close();
+          })
+    );
   }
 
   public onFindById(id: number) {
     this.clearProducts();
-    this._productService.findById(id).subscribe(data => {
-      this.products.push(data);
-      this.listData = new MatTableDataSource(this.products);
-      this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-    });
+    this.subscriptions.push(
+      this._productService.findById(id).subscribe(data => {
+        this.products.push(data);
+        this.listData = new MatTableDataSource(this.products);
+        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+      })
+    );
   }
 
   public clearProducts(): void {
@@ -189,24 +217,29 @@ export class ListProductComponent implements OnInit, AfterViewInit {
 
   public delete(id: number) {
     this._alertService.loadingDialog('Eliminando...');
-    this._productService.delete(id)
-      .pipe(finalize(() => Swal.close()))
-      .subscribe(data => {
-        this.products = [];
-        this.listData = new MatTableDataSource(this.products);
-        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT - 1;
-      });
+    this.subscriptions.push(
+      this._productService.delete(id)
+        .pipe(finalize(() => Swal.close()))
+        .subscribe(data => {
+          this.products = [];
+          this.listData = new MatTableDataSource(this.products);
+          this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT - 1;
+        })
+    );
   }
 
   public update(product: ProductDTORequest, id: number) {
     this._alertService.loadingDialog('Actualizando...');
-    this._productService.update(product, id)
-      .pipe(finalize(() => Swal.close()))
-      .subscribe(data => {
-        this.products = data;
-        this.listData = new MatTableDataSource(this.products);
-        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-      });
+    this.subscriptions.push(
+      this._productService.update(product, id)
+        .subscribe(
+          (data) => {
+            this.onFindById(id);
+            Swal.close()
+          }, (error: HttpErrorResponse) => {
+            Swal.close()
+          })
+    );
   }
 
 }

@@ -63,6 +63,13 @@
     z-index: 998;
 }
 
+::ng-deep {
+    .custom-dialog > mat-dialog-container {
+           padding: 0px;
+           border-radius: 16px;
+       }
+}
+
 .input-search{
     padding-left: 10px;
     margin-left: 90px;

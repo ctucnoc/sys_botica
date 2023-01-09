@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -6,19 +6,22 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddCategoryComponent } from '../add-category/add-category.component';
 import { CategoryDTO } from 'src/app/shared/model/response/categoryDTO';
 import { CategoryService } from 'src/app/shared/service/api/category.service';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CategoryDTORequest } from 'src/app/shared/model/request/categoryDTORequest';
 import { DialogConfirmationComponent } from 'src/app/shared/component/dialog-confirmation/dialog-confirmation.component';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
 import { settings } from 'src/environments/settings';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from 'src/app/shared/service/aler.service';
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-list-category',
   templateUrl: './list-category.component.html',
   styleUrls: ['./list-category.component.scss']
 })
-export class ListCategoryComponent implements OnInit, AfterViewInit {
+export class ListCategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public title!: string;
   public totalElements!: number;
@@ -29,13 +32,22 @@ export class ListCategoryComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscripstions: Array<Subscription> = new Array();
   constructor(
     private _dialog: MatDialog,
-    private _categoryService: CategoryService
+    private _categoryService: CategoryService,
+    private _alertService: AlertService,
   ) { }
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscripstions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit() {
@@ -82,19 +94,16 @@ export class ListCategoryComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(row: any) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = "40%";
-    dialogConfig.height = "30%";
-    dialogConfig.panelClass = "custom-dialog";
-    dialogConfig.data = '¿Seguro que quiere eliminar?';
-    const dialogRef = this._dialog.open(DialogConfirmationComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe((confirmado: Boolean) => {
-      if (confirmado) {
-        this.onDeleteById(row, row.id);
-      }
-    });
+    this._dialog
+      .open(DialogConfirmationComponent, {
+        data: `¿Seguro que quiere eliminar?`
+      })
+      .afterClosed()
+      .subscribe((confirmado: Boolean) => {
+        if (confirmado) {
+          this.onDeleteById(row, row.id);
+        }
+      });
   }
 
 
@@ -103,17 +112,35 @@ export class ListCategoryComponent implements OnInit, AfterViewInit {
   }
 
   findByDescription(key_word: string, page: number, size: number) {
-    this._categoryService.findByDescription(key_word, page, size).subscribe(data => {
-      this.categories = data.content;
-      this.listData = new MatTableDataSource(this.categories);
-      this.totalElements = data.totalElements;
-    });
+    this._alertService.loadingDialog('Buscando...');
+    this.subscripstions.push(
+      this._categoryService.findByDescription(key_word, page, size).subscribe(
+        (data) => {
+          this.categories = data.content;
+          this.listData = new MatTableDataSource(this.categories);
+          this.totalElements = data.totalElements;
+          Swal.close();
+        },
+        (error: HttpErrorResponse) => {
+          this.errorDialog();
+          Swal.close();
+        }
+      )
+    );
+  }
+
+  errorDialog(): void {
+    this._alertService.questionDialog('Ha ocurrido un error. Por favor inténtalo nuevamente', '',
+      true, false, 'Entendido', '', 'assets/icons/alert-frame.svg').then(() => {
+      });
   }
 
   onSave(category: CategoryDTORequest) {
-    this._categoryService.save(category).subscribe(data => {
-      this.onFindById(data.id);
-    });
+    this.subscripstions.push(
+      this._categoryService.save(category).subscribe(data => {
+        this.onFindById(data.id);
+      })
+    );
   }
 
   public onEraser() {
@@ -123,24 +150,30 @@ export class ListCategoryComponent implements OnInit, AfterViewInit {
   }
 
   onUpdate(category: CategoryDTORequest, id: number) {
-    this._categoryService.update(category, id).subscribe(data => {
-      this.onFindById(data.id);
-    });
+    this.subscripstions.push(
+      this._categoryService.update(category, id).subscribe(data => {
+        this.onFindById(data.id);
+      })
+    );
   }
 
   onDeleteById(category: CategoryDTORequest, id: number) {
-    this._categoryService.delete(category, id).subscribe(data => {
-      this.onFindById(data.id);
-    });
+    this.subscripstions.push(
+      this._categoryService.delete(category, id).subscribe(data => {
+        this.onFindById(data.id);
+      })
+    );
   }
 
   onFindById(id: number) {
-    this._categoryService.findById(id).subscribe(data => {
-      this.clearCategories();
-      this.categories.push(data);
-      this.listData = new MatTableDataSource(this.categories);
-      this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-    });
+    this.subscripstions.push(
+      this._categoryService.findById(id).subscribe(data => {
+        this.clearCategories();
+        this.categories.push(data);
+        this.listData = new MatTableDataSource(this.categories);
+        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+      })
+    );
   }
 
   clearCategories() {

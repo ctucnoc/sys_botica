@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,18 +8,21 @@ import { Mark } from 'src/app/shared/model/request/mark';
 import { AddMarkComponent } from '../add-mark/add-mark.component';
 import { DialogConfirmationComponent } from 'src/app/shared/component/dialog-confirmation/dialog-confirmation.component';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { settings } from 'src/environments/settings';
 import { NotificationService } from 'src/app/shared/service/notification.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from "sweetalert2";
+import { AlertService } from 'src/app/shared/service/aler.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-list-mark',
   templateUrl: './list-mark.component.html',
   styleUrls: ['./list-mark.component.scss']
 })
-export class ListMarkComponent implements OnInit, AfterViewInit {
+export class ListMarkComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public title!: string;
   public mark!: Mark;
@@ -30,15 +33,24 @@ export class ListMarkComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public searchKey!: string;
+
+  protected subscripstions: Array<Subscription> = new Array();
   constructor(
     private _dialog: MatDialog,
     private _markService: MarkService,
     private _notificationService: NotificationService,
     private _snackBar: MatSnackBar,
+    private _alertService: AlertService,
   ) { }
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscripstions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit() {
@@ -102,47 +114,70 @@ export class ListMarkComponent implements OnInit, AfterViewInit {
   }
 
   findByDescription(key_word: string, page: number, size: number) {
-    this._markService.findAll(key_word, page, size).subscribe(data => {
-      this.marks = data.content;
-      this.listData = new MatTableDataSource(this.marks);
-      this.totalElements = data.totalElements;
-    });
+    this._alertService.loadingDialog('Buscando...');
+    this.subscripstions.push(
+      this._markService.findAll(key_word, page, size).subscribe(
+        (data) => {
+          this.marks = data.content;
+          this.listData = new MatTableDataSource(this.marks);
+          this.totalElements = data.totalElements;
+          Swal.close();
+        },
+        (error: HttpErrorResponse) => {
+          this.errorDialog();
+          Swal.close();
+        })
+    );
+  }
+
+  errorDialog(): void {
+    this._alertService.questionDialog('Ha ocurrido un error. Por favor inténtalo nuevamente', '',
+      true, false, 'Entendido', '', 'assets/icons/alert-frame.svg').then(() => {
+      });
   }
 
   onSave(mark: Mark) {
-    this._markService.save(mark).subscribe(data => {
-      this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_ADD,this._snackBar);
-      this.onFindById(data.id);
-    });
+    this.subscripstions.push(
+      this._markService.save(mark).subscribe(data => {
+        this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_ADD, this._snackBar);
+        this.onFindById(data.id);
+      })
+    );
   }
 
   onUpdate(mark: Mark, id: number) {
-    this._markService.update(mark, id).subscribe(data => {
-      this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_UPDATE,this._snackBar);
-      this.onFindById(data.id);
-    });
+    this.subscripstions.push(
+      this._markService.update(mark, id).subscribe(data => {
+        this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_UPDATE, this._snackBar);
+        this.onFindById(data.id);
+      })
+    );
   }
 
   onDeleteById(id: number) {
-    this._markService.delete(id).subscribe(data => {
-      this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_DELETE,this._snackBar);
-      this.onFindById(data.id);
-    });
+    this.subscripstions.push(
+      this._markService.delete(id).subscribe(data => {
+        this._notificationService.success(SysBoticaConstant.MESSAGE_OBJECT_DELETE, this._snackBar);
+        this.onFindById(data.id);
+      })
+    );
   }
 
-  onEraser(){
+  onEraser() {
     this.clear();
     this.clearMarks();
     this.findByDescription(SysBoticaConstant.VC_EMPTY, SysBoticaConstant.PAG_NRO_INITIAL, SysBoticaConstant.PAG_SIZE_INITIAL);
   }
 
   onFindById(id: number) {
-    this._markService.findById(id).subscribe(data => {
-      this.clearMarks();
-      this.marks.push(data);
-      this.listData = new MatTableDataSource(this.marks);
-      this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-    });
+    this.subscripstions.push(
+      this._markService.findById(id).subscribe(data => {
+        this.clearMarks();
+        this.marks.push(data);
+        this.listData = new MatTableDataSource(this.marks);
+        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+      })
+    );
   }
 
   clearMarks() {

@@ -127,7 +127,9 @@ export class SingInComponent implements OnInit {
   private setStorage(dto: UserResponseDTO) {
     this._storageService.setLocalStorage(JSON.stringify(dto.accsesToken), SysBoticaConstant.STORAGE_ACCESS_TOKEN);
     this._storageService.setLocalStorage(JSON.stringify(dto.name), SysBoticaConstant.STORAGE_USER_NAME);
+    this._storageService.setLocalStorage(JSON.stringify(dto.user), SysBoticaConstant.STORAGE_USER);
     this._storageService.setLocalStorage(JSON.stringify(dto.authorities), SysBoticaConstant.STORAGE_AUTHORITIES);
     this._storageService.setLocalStorage(JSON.stringify(true), SysBoticaConstant.STORAGE_IS_LOGGED_IN);
+    this._storageService.setLocalStorage(JSON.stringify(dto.idSubsidiary),SysBoticaConstant.STORAGE_ID_SUBSIDIARY);
   }
 }

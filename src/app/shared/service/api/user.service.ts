@@ -3,6 +3,7 @@ import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
 import { UserDTORequest } from '../../model/request/userDTORequest';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { ChangePasswordDTORequest } from '../../model/request/changePasswordDTORequest';
 
 @Injectable({
     providedIn: 'root'
@@ -44,5 +45,9 @@ export class UserService {
 
     findByAutoCompleteFullName(key_word: string): Observable<any> {
         return this._httpClient.get<any>(environment.urlBase + '/users/user/auto-complete?key_word=' + key_word);
+    }
+
+    public changePassword(dto:ChangePasswordDTORequest): Observable<any> {
+        return this._httpClient.post<any>(environment.urlBase + '/users/user/change-password',dto);
     }
 }

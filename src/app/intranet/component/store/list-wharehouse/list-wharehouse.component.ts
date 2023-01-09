@@ -6,7 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { WharehouseDTO } from 'src/app/shared/model/response/WharehouseDTO';
 import { WharehouseService } from 'src/app/shared/service/api/wharehouse.service';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WharehouseDTORequest } from 'src/app/shared/model/request/wharehouseDTORequest';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
@@ -29,6 +29,8 @@ export class ListWharehouseComponent implements OnInit {
   public displayedColumns: string[] = ['ALMACÉN', 'DESCRIPCIÓN', 'TIPO', 'SELECCIONE'];
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     protected _wharehouseService: WharehouseService,
     protected _dialog: MatDialog,
@@ -37,6 +39,12 @@ export class ListWharehouseComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = settings.appTitle + ' ' + settings.appVerssion;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -92,54 +100,64 @@ export class ListWharehouseComponent implements OnInit {
   }
 
   public onFindByName(name: string, page: number, size: number) {
-    this._wharehouseService.findByName(name, page, size).subscribe(
-      (data) => {
-        this.wharehouses = data.content;
-        this.dataSource = new MatTableDataSource(this.wharehouses);
-        this.totalElements = data.totalElements;
-      }
+    this.subscriptions.push(
+      this._wharehouseService.findByName(name, page, size).subscribe(
+        (data) => {
+          this.wharehouses = data.content;
+          this.dataSource = new MatTableDataSource(this.wharehouses);
+          this.totalElements = data.totalElements;
+        }
+      )
     );
   }
 
   public onSave(row: WharehouseDTORequest) {
-    this._wharehouseService.save(row).subscribe(
-      (rpta: any) => {
-        if (rpta.status === 200) {
-          const id = rpta.body?.id;
-          this.onFindById(id);
+    this.subscriptions.push(
+      this._wharehouseService.save(row).subscribe(
+        (rpta: any) => {
+          if (rpta.status === 200) {
+            const id = rpta.body?.id;
+            this.onFindById(id);
+          }
         }
-      }
+      )
     );
   }
 
   public onUpdate(row: WharehouseDTORequest, id: number) {
-    this._wharehouseService.update(row, id).subscribe(
-      (resp: any) => {
-        if (resp.status === 200) {
-          this.onFindById(id);
+    this.subscriptions.push(
+      this._wharehouseService.update(row, id).subscribe(
+        (resp: any) => {
+          if (resp.status === 200) {
+            this.onFindById(id);
+          }
         }
-      }
+      )
     );
   }
 
   public onRemove(id: number) {
-    this._wharehouseService.delete(id).subscribe(
-      (resp: any) => {
-        if (resp.status === 200) {
-          this.onEraser();
+    this.subscriptions.push(
+      this._wharehouseService.delete(id).subscribe(
+        (resp: any) => {
+          if (resp.status === 200) {
+            this.onEraser();
+          }
         }
-      }
+      )
     );
   }
 
   public onFindById(id: number) {
-    this._wharehouseService.findById(id).subscribe(
-      (data) => {
-        this.clearWharehouses();
-        this.wharehouses.push(data);
-        this.dataSource = new MatTableDataSource(this.wharehouses);
-        this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
-      }
+    this.subscriptions.push(
+      this._wharehouseService.findById(id).subscribe(
+        (data) => {
+          this.clearWharehouses();
+          this.wharehouses.push(data);
+          this.dataSource = new MatTableDataSource(this.wharehouses);
+          this.totalElements = SysBoticaConstant.NRO_ELEMENT_DEFAULT;
+        }
+      )
     );
   }
 

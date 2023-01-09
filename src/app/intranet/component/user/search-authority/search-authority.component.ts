@@ -6,7 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthorityService } from 'src/app/shared/service/api/authority.service';
 import { SysBoticaConstant } from 'src/app/shared/constants/sysBoticaConstant';
-import { merge } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -23,6 +23,8 @@ export class SearchAuthorityComponent implements OnInit, AfterViewInit {
   public displayedColumns: string[] = ['ROL', 'SELECCIONE'];
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _dialoRef: MatDialogRef<SearchAuthorityComponent>,
     @Inject(MAT_DIALOG_DATA) public id: any,
@@ -30,6 +32,12 @@ export class SearchAuthorityComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   ngAfterViewInit() {
@@ -64,11 +72,13 @@ export class SearchAuthorityComponent implements OnInit, AfterViewInit {
 
   public onFindByIduserAllAuthority(id: any, page: number, size: number) {
     if (id) {
-      this._authorityServive.findByIduser(id, page, size).subscribe(data => {
-        this.authorities = data.content;
-        this.listData = new MatTableDataSource(this.authorities);
-        this.totalElements = data.totalElements;
-      });
+      this.subscriptions.push(
+        this._authorityServive.findByIduser(id, page, size).subscribe(data => {
+          this.authorities = data.content;
+          this.listData = new MatTableDataSource(this.authorities);
+          this.totalElements = data.totalElements;
+        })
+      );
     }
   }
 

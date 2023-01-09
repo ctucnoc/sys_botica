@@ -1,0 +1,18 @@
+.avatar-product{
+    width: 8%;
+    height: 8%;
+    border-radius: 50px;
+}
+
+.box-upload-files {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding-top: 47px !important;
+  
+    .files-management-btn + .files-management-btn {
+      margin-left: 32px !important;
+    }
+  }

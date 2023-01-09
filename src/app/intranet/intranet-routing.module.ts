@@ -20,6 +20,8 @@ import { SaleComponent } from './modules/sale/sale/sale.component';
 import { SoldProductComponent } from './modules/sale/sold-product/sold-product.component';
 import { ReportSaleDateComponent } from './modules/report/report-sale-date/report-sale-date.component';
 import { WharehouseSubsidiaryComponent } from './modules/conf/wharehouse-subsidiary/wharehouse-subsidiary.component';
+import { ChangePasswordComponent } from './modules/user/change-password/change-password.component';
+import { ReportProductWharehouseComponent } from './modules/report/report-product-wharehouse/report-product-wharehouse.component';
 
 const routes: Routes = [
     {
@@ -44,7 +46,9 @@ const routes: Routes = [
             { path: 'customer', component: CustomerComponent },
             { path: 'sold-product', component: SoldProductComponent },
             { path: 'report-sale-date', component: ReportSaleDateComponent },
+            { path: 'product-wharehouse', component: ReportProductWharehouseComponent },
             { path: 'wharehouse-subsidiary', component: WharehouseSubsidiaryComponent },
+            { path: 'change-password', component: ChangePasswordComponent },
         ]
     }
 ];

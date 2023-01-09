@@ -14,6 +14,8 @@
         <h2 class="title-h2">Productos</h2>
     </div>
 </div>
+
+
 <div class="container">
     <div class="search-div">
         <button class="circule-button padding-right" mat-raised-button matTooltip="Nuevo Producto" (click)="onCreater()">
@@ -81,6 +83,9 @@
             <ng-container matColumnDef="SELECCIONE">
                 <mat-header-cell fxFlex="10%" *matHeaderCellDef>SELECCIONE</mat-header-cell>
                 <mat-cell fxFlex="10%" *matCellDef="let row">
+                    <button mat-icon-button matTooltip="Imagenes" (click)="onProductImg(row)">
+                        <mat-icon svgIcon="image"></mat-icon>
+                    </button>
                     <button mat-icon-button matTooltip="Editar" (click)="onCreater(row)">
                         <mat-icon svgIcon="edit"></mat-icon>
                     </button>

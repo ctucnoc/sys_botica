@@ -1,7 +1,7 @@
 export const settings = {
     appId:'com.sys.botica.crce.pe',
-    appVerssion:'1.0.0',
-    appTitle:'Sesy farma',
+    appVerssion:' v1',
+    appTitle:'Salud Sesifarma',
     appAutor:'Cristian Tucno Conde',
-    description:'este aplicativo esta hecho para la botica del amor de mi vida Celia Noemi Yucra Velasquez'
+    description:'Aplicativo para realizar la gestión de la botica salud sesifarma'
 }

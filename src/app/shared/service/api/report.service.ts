@@ -17,11 +17,17 @@ export class ReportService {
         let queryParameters = new HttpParams();
         queryParameters = queryParameters.append('dateFrom', dateFrom ? this.getNewDateFormat(dateFrom) : this.getNewDateFormat(ValidateService.dateToday().toString()));
         queryParameters = queryParameters.append('dateTo', dateTo ? this.getNewDateFormat(dateTo) : this.getNewDateFormat(ValidateService.dateToday().toString()));
-        return this._httpClient.get(environment.urlBase + '/reports/report/sale-x-date?'+queryParameters, {
+        return this._httpClient.get(environment.urlBase + '/reports/report/sale-x-date?' + queryParameters, {
             responseType: 'blob'
         });
     }
 
+    public findByProductAllWharehouse(idwharehouse: number): Observable<any> {
+        return this._httpClient.get(environment.urlBase + '/reports/report/product-all/' + idwharehouse, {
+            responseType: 'blob'
+        });
+    }
+    
     public getNewDateFormat(date: any): string {
         const datePipe: any = new DatePipe('en-US');
         return datePipe.transform(date, 'yyyy-MM-dd');

@@ -6,6 +6,7 @@ import { SysBoticaConstant, ARRAY_DOS_OPCIONES } from 'src/app/shared/constants/
 import { SecurityPolicyDTORequest } from 'src/app/shared/model/request/securityPolicyDTORequest';
 import { NotificationService } from 'src/app/shared/service/notification.service';
 import { settings } from 'src/environments/settings';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-see-security-policy',
@@ -18,10 +19,18 @@ export class SeeSecurityPolicyComponent implements OnInit, AfterViewInit {
   public ltsDosOpciones: any[] = [];
   public blSave: boolean = true;
   public securityPolicy!: SecurityPolicyDTO;
+
+  protected subscriptions: Array<Subscription> = new Array();
   constructor(
     private _securityPolicyService: SecurityPolicyService,
     private _formBuilder: FormBuilder,
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
 
   // [formGroup]="frmSecurityPolicy" autocomplete="off"
   frmSecurityPolicy = this._formBuilder.group({
@@ -44,12 +53,14 @@ export class SeeSecurityPolicyComponent implements OnInit, AfterViewInit {
   }
 
   onFindByCode() {
-    this._securityPolicyService.findByCode().subscribe(data => {
-      if (data) {
-        this.securityPolicy = data;
-        this.setFrmSecurityPolicy(this.securityPolicy);
-      }
-    });
+    this.subscriptions.push(
+      this._securityPolicyService.findByCode().subscribe(data => {
+        if (data) {
+          this.securityPolicy = data;
+          this.setFrmSecurityPolicy(this.securityPolicy);
+        }
+      })
+    );
   }
 
   setFrmSecurityPolicy(row: SecurityPolicyDTO) {
@@ -90,12 +101,14 @@ export class SeeSecurityPolicyComponent implements OnInit, AfterViewInit {
   }
 
   public onUpdate(row: SecurityPolicyDTORequest, id: number) {
-    this._securityPolicyService.update(row, id).subscribe(data => {
-      if (data) {
-        this.onFindByCode();
-        this.disabledFrmSecurityPolicy();
-      }
-    });
+    this.subscriptions.push(
+      this._securityPolicyService.update(row, id).subscribe(data => {
+        if (data) {
+          this.onFindByCode();
+          this.disabledFrmSecurityPolicy();
+        }
+      })
+    );
   }
 
 }

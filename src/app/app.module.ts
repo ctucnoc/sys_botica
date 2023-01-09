@@ -9,7 +9,6 @@ import { settings } from 'src/environments/settings';
 import { AuthInterceptor } from './shared/interceptor/auth.interceptor';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { FORMATS } from 'src/app/shared/constants/sysBoticaConstant';
-import { NgChartsModule } from 'ng2-charts';
 import { NgxMaskModule, IConfig } from 'ngx-mask'
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
@@ -27,7 +26,6 @@ const MASK_CONFIG: Partial<IConfig> = {
     AppRoutingModule,
     HttpClientModule,
     CoreModule,
-    NgChartsModule,
     NgxMaskModule.forRoot(MASK_CONFIG)
   ],
   providers: [
